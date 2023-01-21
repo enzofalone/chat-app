@@ -11,11 +11,11 @@ import NoRoomScreen from "./components/NoRoomScreen";
 function App() {
     const [messageList, setMessageList] = useState([]);
     const [inputValue, setInputValue] = useState("");
-    const [fetching, setFetching] = useState(false);
     const [username, setUsername] = useState("");
     const [isUsernameDone, setIsUsernameDone] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [roomList, setRoomList] = useState([]);
+    const [fetching, setFetching] = useState(false);
 
     const createMessage = () => {
         return {
@@ -48,7 +48,7 @@ function App() {
 
         socket.emit(
             "join-room",
-            { room: roomName, prevRoom: selectedRoom },
+            { room: roomName, prevRoom: selectedRoom, name: username },
             (message) => {
                 addMessage(message);
             }
@@ -63,7 +63,7 @@ function App() {
 
     const fetchRooms = async () => {
         setFetching(true);
-
+        console.log("fetching rooms");
         try {
             const response = await axios.get("http://localhost:3000/rooms/");
 
@@ -81,7 +81,7 @@ function App() {
 
     useEffect(() => {
         socket.on("connect", () => {
-            addMessage({ name: socket.id, text: `connected as ${socket.id}` });
+            // foo
         });
 
         socket.on("receive-message", (message) => {
@@ -101,10 +101,10 @@ function App() {
                 />
             </div>
             <div className="flex-grow flex flex-col">
-                <div className="message-list-container flex-grow">
-                    <ChatHeader
-                        title={selectedRoom ? selectedRoom : "Chat App 😮"}
-                    />
+                <ChatHeader
+                    title={selectedRoom ? selectedRoom : "Chat App 😮"}
+                />
+                <div className="message-list-container flex-grow min-h-0 overflow-auto">
                     {selectedRoom && isUsernameDone ? (
                         <ChatScreen messageList={messageList} />
                     ) : (
