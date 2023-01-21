@@ -1,7 +1,7 @@
 import React from "react";
 import { useCallback } from "react";
 
-function ChatInput({ inputValue, setInputValue, handleOnSend }) {
+function ChatInput({ inputValue, setInputValue, handleOnSend, inputRef }) {
     const handleOnChange = useCallback((event) =>
         setInputValue(event.target.value)
     );
@@ -13,6 +13,7 @@ function ChatInput({ inputValue, setInputValue, handleOnSend }) {
                 onSubmit={handleOnSend}
             >
                 <input
+                    ref={inputRef}
                     className={
                         "flex-grow bg-gray-700 rounded-md py-3 px-3 my-auto mx-5"
                     }

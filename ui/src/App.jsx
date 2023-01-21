@@ -1,5 +1,5 @@
 import { socket } from "./service/socket";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
 import ChatScreen from "./components/ChatScreen";
 import ChatInput from "./components/ChatInput";
@@ -16,6 +16,8 @@ function App() {
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [roomList, setRoomList] = useState([]);
     const [fetching, setFetching] = useState(false);
+
+    // TODO: MOVE EVERYTHING TO A CONTEXT
 
     const createMessage = () => {
         return {
@@ -46,6 +48,8 @@ function App() {
     const handleOnChangeRoom = (e, roomName) => {
         e.preventDefault();
 
+        setMessageList([]);
+
         socket.emit(
             "join-room",
             { room: roomName, prevRoom: selectedRoom, name: username },
@@ -63,7 +67,7 @@ function App() {
 
     const fetchRooms = async () => {
         setFetching(true);
-        console.log("fetching rooms");
+
         try {
             const response = await axios.get("http://localhost:3000/rooms/");
 
@@ -81,7 +85,7 @@ function App() {
 
     useEffect(() => {
         socket.on("connect", () => {
-            // foo
+            // nothing yet
         });
 
         socket.on("receive-message", (message) => {
@@ -93,6 +97,7 @@ function App() {
 
     return (
         <div className="App bg-gray-900 flex flex-row w-[100vw] h-[100vh]">
+            {/* SIDEBAR */}
             <div className={"w-[20vw] h-screen"}>
                 <Sidebar
                     roomList={roomList}
@@ -100,6 +105,7 @@ function App() {
                     handleOnChangeRoom={handleOnChangeRoom}
                 />
             </div>
+            {/* MAIN APP COMPONENTS */}
             <div className="flex-grow flex flex-col">
                 <ChatHeader
                     title={selectedRoom ? selectedRoom : "Chat App 😮"}
@@ -116,6 +122,7 @@ function App() {
                         />
                     )}
                 </div>
+                {/* BOTTOM COMPONENTS (input bar) */}
                 <div className="controls">
                     <ChatInput
                         inputValue={inputValue}
