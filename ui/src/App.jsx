@@ -6,29 +6,40 @@ import ChatInput from "./components/ChatInput";
 import Sidebar from "./components/Sidebar";
 import ChatHeader from "./components/ChatHeader";
 import axios from "axios";
+import NoRoomScreen from "./components/NoRoomScreen";
 
 function App() {
     const [messageList, setMessageList] = useState([]);
     const [inputValue, setInputValue] = useState("");
     const [fetching, setFetching] = useState(false);
-
-    const [selectedRoom, setSelectedRoom] = useState("");
+    const [username, setUsername] = useState("");
+    const [isUsernameDone, setIsUsernameDone] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState(null);
     const [roomList, setRoomList] = useState([]);
+
+    const createMessage = () => {
+        return {
+            id: socket.id,
+            name: username,
+            text: inputValue,
+            room: selectedRoom,
+        };
+    };
 
     const handleOnSend = (e) => {
         e.preventDefault();
 
         if (!inputValue.length) return;
+        if (!selectedRoom.length) return;
+
+        const newMessage = createMessage();
 
         // send message to server
-        socket.emit("send-message", {
-            text: inputValue,
-            id: socket.id,
-            room: selectedRoom,
-        });
+        socket.emit("send-message", newMessage);
 
         // add message to client
-        addMessage({ id: socket.id, text: inputValue, name: socket.id });
+        addMessage(newMessage);
+
         setInputValue("");
     };
 
@@ -55,11 +66,17 @@ function App() {
 
         try {
             const response = await axios.get("http://localhost:3000/rooms/");
-            console.log(response.data);
+
             setRoomList(response.data);
         } catch (error) {
             console.error(error);
         }
+    };
+
+    const handleOnSubmitUsername = (e) => {
+        e.preventDefault();
+
+        setIsUsernameDone(true);
     };
 
     useEffect(() => {
@@ -69,7 +86,6 @@ function App() {
 
         socket.on("receive-message", (message) => {
             addMessage(message);
-            console.log(message);
         });
 
         fetchRooms();
@@ -86,8 +102,19 @@ function App() {
             </div>
             <div className="flex-grow flex flex-col">
                 <div className="message-list-container flex-grow">
-                    <ChatHeader />
-                    <ChatScreen messageList={messageList} />
+                    <ChatHeader
+                        title={selectedRoom ? selectedRoom : "Chat App 😮"}
+                    />
+                    {selectedRoom && isUsernameDone ? (
+                        <ChatScreen messageList={messageList} />
+                    ) : (
+                        <NoRoomScreen
+                            isUsernameDone={isUsernameDone}
+                            username={username}
+                            setUsername={setUsername}
+                            handleOnSubmitUsername={handleOnSubmitUsername}
+                        />
+                    )}
                 </div>
                 <div className="controls">
                     <ChatInput

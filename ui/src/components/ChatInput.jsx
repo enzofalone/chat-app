@@ -16,20 +16,7 @@ function ChatInput({ inputValue, setInputValue, handleOnSend }) {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
-
-        {/* <input type={"submit"} onClick={handleOnSend} /> */}
       </form>
-      {/* <form>
-          <input
-            type={"text"}
-            name={"room"}
-            autoFocus={false}
-            value={roomFormValue}
-            placeholder={"enter room name"}
-            onChange={(e) => setRoomFormValue(e.target.value)}
-          />
-          <input type={"submit"} onClick={handleOnChangeRoom} />
-        </form> */}
     </div>
   );
 }
