@@ -6,6 +6,14 @@ const roomSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    connections: {
+        type: [
+            {
+                username: String,
+                socketId: String,
+            },
+        ],
+    },
     createdAt: {
         type: Date,
         required: true,

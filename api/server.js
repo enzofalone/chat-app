@@ -18,6 +18,8 @@ const io = new Server(server, {
 // routes
 const routesRooms = require("./routes/rooms");
 const routesUser = require("./routes/user");
+const createMessage = require("./utils/message");
+const { createHash } = require("crypto");
 // const routesAuth = require("./routes/auth");
 
 // middleware
@@ -49,26 +51,43 @@ io.on("connection", (socket) => {
         });
     });
 
-    socket.on("join-room", (obj, cb) => {
-        console.log(obj);
-        socket.join(obj.room);
-        socket.leave(obj.prevRoom);
+    socket.on("join-room", (data, callback) => {
+        console.log(data);
 
-        cb({ name: "Server", text: "Successfully joined " + obj.room + "!" });
+        socket.join(data.room);
+        socket.leave(data.prevRoom);
 
-        socket.to(obj.prevRoom).emit("receive-message", {
-            id: socket.id,
+        // Send callback message to the user creating the
+        callback({
             name: "Server",
-            text: `${socket.id} left ${obj.room}`,
+            text: "Successfully joined " + data.room + "!",
         });
 
-        socket.to(obj.room).emit("receive-message", {
-            id: socket.id,
-            name: "Server",
-            text: `${socket.id} joined ${obj.room}`,
-        });
+        socket
+            .to(data.prevRoom)
+            .emit(
+                "receive-message",
+                createMessage(
+                    socket.id,
+                    data.prevRoom,
+                    `${data.name || data.id} left ${data.prevRoom}`,
+                    data.prevRoom
+                )
+            );
 
-        console.log(socket.id, "joined", obj.room);
+        socket
+            .to(data.room)
+            .emit(
+                "receive-message",
+                createMessage(
+                    socket.id,
+                    data.room,
+                    `${data.name || data.id} joined ${data.room}`,
+                    data.room
+                )
+            );
+
+        console.log(socket.id, "joined", data.room);
     });
 });
 
