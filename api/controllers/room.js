@@ -16,6 +16,7 @@ class Room {
 
     static async getAll() {
         const filter = {};
+
         try {
             const allRooms = await RoomModel.find(filter);
 
@@ -27,6 +28,7 @@ class Room {
     }
 
     static async findById(id) {
+        
         try {
             const room = await RoomModel.findById(id);
 

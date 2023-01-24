@@ -18,8 +18,8 @@ const io = new Server(server, {
 // routes
 const routesRooms = require("./routes/rooms");
 const routesUser = require("./routes/user");
+const routesMessages = require("./routes/messages");
 const createMessage = require("./utils/message");
-const { createHash } = require("crypto");
 // const routesAuth = require("./routes/auth");
 
 // middleware
@@ -30,10 +30,20 @@ app.use(cors());
 // app.use("/routes/", routesAuth);
 app.use("/rooms/", routesRooms);
 app.use("/user/", routesUser);
+app.use("/messages/", routesMessages);
 
-// test
 app.get("/", (req, res, next) => {
     res.json({ Hello: "world" });
+});
+
+// generic error handling
+app.use((err, req, res, next) => {
+    const status = err.status || 500;
+    const message = err.message;
+
+    return res.status(status).json({
+        error: { message, status },
+    });
 });
 
 // set up socket.io

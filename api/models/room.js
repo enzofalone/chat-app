@@ -1,25 +1,26 @@
 const mongoose = require("mongoose");
 
-const roomSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        unique: true,
+const roomSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        // TODO: store connections
+        // connections: {
+        //     type: [
+        //         {
+        //             username: String,
+        //             socketId: String,
+        //         },
+        //     ],
+        // },
     },
-    connections: {
-        type: [
-            {
-                username: String,
-                socketId: String,
-            },
-        ],
-    },
-    createdAt: {
-        type: Date,
-        required: true,
-        default: Date.now,
-    },
-});
+    {
+        timestamps: true,
+    }
+);
 
 const roomModel = mongoose.model("Room", roomSchema);
 
