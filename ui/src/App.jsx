@@ -7,6 +7,7 @@ import Sidebar from "./components/Sidebar";
 import ChatHeader from "./components/ChatHeader";
 import axios from "axios";
 import NoRoomScreen from "./components/NoRoomScreen";
+import { API_BASE_URL } from "./constants";
 
 function App() {
     const [messageList, setMessageList] = useState([]);
@@ -69,7 +70,7 @@ function App() {
         setFetching(true);
 
         try {
-            const response = await axios.get("http://localhost:3000/rooms/");
+            const response = await axios.get(`${API_BASE_URL}rooms/`);
 
             setRoomList(response.data);
         } catch (error) {
