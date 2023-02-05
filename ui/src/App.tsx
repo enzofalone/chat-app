@@ -1,6 +1,5 @@
 import { socket } from "./service/socket";
-import { useEffect, useState, useRef } from "react";
-import "./App.css";
+import { useEffect, useState, SyntheticEvent } from "react";
 import ChatScreen from "./components/ChatScreen";
 import ChatInput from "./components/ChatInput";
 import Sidebar from "./components/Sidebar";
@@ -8,34 +7,45 @@ import ChatHeader from "./components/ChatHeader";
 import axios from "axios";
 import NoRoomScreen from "./components/NoRoomScreen";
 import { API_BASE_URL } from "./constants";
+import { createMessage } from "./utils/message";
+
+export type Message = {
+    id: string | number | undefined;
+    name: string;
+    text: string;
+    room: string | undefined;
+};
+
+export type Room = {
+    id: string | number;
+    title: string;
+    createdAt: string;
+    updatedAt: string;
+};
 
 function App() {
-    const [messageList, setMessageList] = useState([]);
-    const [inputValue, setInputValue] = useState("");
-    const [username, setUsername] = useState("");
+    const [messageList, setMessageList] = useState<Message[]>([]);
+    const [inputValue, setInputValue] = useState<string>("");
+    const [username, setUsername] = useState<string>("");
     const [isUsernameDone, setIsUsernameDone] = useState(false);
-    const [selectedRoom, setSelectedRoom] = useState(null);
-    const [roomList, setRoomList] = useState([]);
+    const [selectedRoom, setSelectedRoom] = useState<string>("");
+    const [roomList, setRoomList] = useState<Room[]>([]);
     const [fetching, setFetching] = useState(false);
 
     // TODO: MOVE EVERYTHING TO A CONTEXT
 
-    const createMessage = () => {
-        return {
-            id: socket.id,
-            name: username,
-            text: inputValue,
-            room: selectedRoom,
-        };
-    };
-
-    const handleOnSend = (e) => {
+    const handleOnSend = (e: SyntheticEvent) => {
         e.preventDefault();
 
         if (!inputValue.length) return;
-        if (!selectedRoom.length) return;
+        if (!selectedRoom) return;
 
-        const newMessage = createMessage();
+        const newMessage = createMessage(
+            socket.id,
+            username,
+            inputValue,
+            selectedRoom
+        );
 
         // send message to server
         socket.emit("send-message", newMessage);
@@ -46,23 +56,23 @@ function App() {
         setInputValue("");
     };
 
-    const handleOnChangeRoom = (e, roomName) => {
+    const handleOnChangeRoom = (e: SyntheticEvent, roomTitle: string) => {
         e.preventDefault();
 
         setMessageList([]);
 
         socket.emit(
             "join-room",
-            { room: roomName, prevRoom: selectedRoom, name: username },
-            (message) => {
+            { prevRoom: selectedRoom, room: roomTitle, username },
+            (message: Message) => {
                 addMessage(message);
             }
         );
 
-        setSelectedRoom(roomName);
+        setSelectedRoom(roomTitle);
     };
 
-    const addMessage = (message) => {
+    const addMessage = (message: Message) => {
         setMessageList((prevList) => [...prevList, message]);
     };
 
@@ -78,7 +88,7 @@ function App() {
         }
     };
 
-    const handleOnSubmitUsername = (e) => {
+    const handleOnSubmitUsername = (e: SyntheticEvent) => {
         e.preventDefault();
 
         setIsUsernameDone(true);
@@ -89,7 +99,7 @@ function App() {
             // nothing yet
         });
 
-        socket.on("receive-message", (message) => {
+        socket.on("receive-message", (message: Message) => {
             addMessage(message);
         });
 
@@ -109,7 +119,7 @@ function App() {
             {/* MAIN APP COMPONENTS */}
             <div className="flex-grow flex flex-col">
                 <ChatHeader
-                    title={selectedRoom ? selectedRoom : "Chat App 😮"}
+                    title={selectedRoom.length ? selectedRoom : "Chat App 😮"}
                 />
                 <div className="message-list-container flex-grow min-h-0 overflow-auto">
                     {selectedRoom && isUsernameDone ? (
@@ -129,6 +139,7 @@ function App() {
                         inputValue={inputValue}
                         setInputValue={setInputValue}
                         handleOnSend={handleOnSend}
+                        inputRef={null}
                     />
                 </div>
             </div>

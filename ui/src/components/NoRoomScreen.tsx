@@ -1,11 +1,18 @@
-import React from "react";
+import React, { FC, SyntheticEvent } from "react";
 
-function NoRoomScreen({
+type Props = {
+    username: string;
+    setUsername: (newUsername: string) => void;
+    handleOnSubmitUsername: (event: SyntheticEvent) => void;
+    isUsernameDone: boolean;
+};
+
+const NoRoomScreen: FC<Props> = ({
     username,
     setUsername,
     handleOnSubmitUsername,
     isUsernameDone,
-}) {
+}) => {
     return (
         <div className="w-full h-full flex flex-col justify-center place-items-center">
             <span className="text-4xl text-center">
@@ -17,7 +24,6 @@ function NoRoomScreen({
                     <input
                         className="rounded-md p-3 text-lg "
                         disabled={isUsernameDone}
-                        htmlFor={"username"}
                         type={"text"}
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
@@ -37,6 +43,6 @@ function NoRoomScreen({
             </div>
         </div>
     );
-}
+};
 
 export default NoRoomScreen;

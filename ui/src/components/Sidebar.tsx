@@ -1,7 +1,14 @@
-import React from "react";
+import React, { FC, SyntheticEvent } from "react";
+import { Room } from "../App";
 import SidebarRoom from "./SidebarRoom";
 
-function Sidebar({ roomList, selectedRoom, handleOnChangeRoom }) {
+type Props = {
+    roomList: Room[];
+    selectedRoom: string | undefined;
+    handleOnChangeRoom: (event: SyntheticEvent, room: string) => void;
+};
+
+const Sidebar: FC<Props> = ({ roomList, selectedRoom, handleOnChangeRoom }) => {
     return (
         <div className="w-full h-full flex flex-col flex-grow bg-gray-800">
             {/* sidebar header */}
@@ -11,12 +18,12 @@ function Sidebar({ roomList, selectedRoom, handleOnChangeRoom }) {
                 </span>
             </div>
             <div>
-                {Object.keys(roomList).map((room, idx) => {
+                {roomList.map((room) => {
                     return (
                         <SidebarRoom
-                            key={roomList[room]._id}
-                            name={roomList[room].name}
-                            isSelected={selectedRoom === roomList[room].name}
+                            key={room.id}
+                            title={room.title}
+                            isSelected={selectedRoom === room.title}
                             handleOnChangeRoom={handleOnChangeRoom}
                         />
                     );
@@ -24,6 +31,6 @@ function Sidebar({ roomList, selectedRoom, handleOnChangeRoom }) {
             </div>
         </div>
     );
-}
+};
 
 export default Sidebar;
