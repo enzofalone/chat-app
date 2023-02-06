@@ -1,7 +1,8 @@
+// maintain consistent message objects
 const createMessage = (id, name, text, room) => {
     return {
         id,
-        name,
+        username: name,
         text,
         room,
     };

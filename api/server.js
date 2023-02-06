@@ -9,18 +9,16 @@ const http = require("http");
 const server = http.createServer(app);
 const db = require("./db");
 const { Server } = require("socket.io");
-const io = new Server(server, {
-    cors: {
-        origin: [`http://localhost:${UI_PORT}`],
-    },
-});
 
 // routes
 const routesRooms = require("./routes/rooms");
 const routesUser = require("./routes/user");
 const routesMessages = require("./routes/messages");
 const createMessage = require("./utils/message");
-// const routesAuth = require("./routes/auth");
+
+// socket events
+const addMessageEvents = require("./socket/message");
+const addRoomEvents = require("./socket/room");
 
 // middleware
 app.use(bodyParser.json());
@@ -46,59 +44,17 @@ app.use((err, req, res, next) => {
     });
 });
 
-// set up socket.io
+// initialize socket.io server
+const io = new Server(server, {
+    cors: {
+        origin: [`http://localhost:${UI_PORT}`],
+    },
+});
 
-// TODO: refactor code and throw socket events outside of index file
+// set up socket.io events
 io.on("connection", (socket) => {
-    console.log("Connected!");
-
-    socket.on("send-message", (message) => {
-        console.log(message.id, message.text);
-
-        socket.to(message.room).emit("receive-message", {
-            ...message,
-            name: message.name || message.id,
-        });
-    });
-
-    socket.on("join-room", (data, callback) => {
-        console.log(data);
-
-        socket.join(data.room);
-        socket.leave(data.prevRoom);
-
-        // Send callback message to the user creating the
-        callback({
-            name: "Server",
-            text: "Successfully joined " + data.room + "!",
-        });
-
-        socket
-            .to(data.prevRoom)
-            .emit(
-                "receive-message",
-                createMessage(
-                    socket.id,
-                    data.prevRoom,
-                    `${data.name || data.id} left ${data.prevRoom}`,
-                    data.prevRoom
-                )
-            );
-
-        socket
-            .to(data.room)
-            .emit(
-                "receive-message",
-                createMessage(
-                    socket.id,
-                    data.room,
-                    `${data.name || data.id} joined ${data.room}`,
-                    data.room
-                )
-            );
-
-        console.log(socket.id, "joined", data.room);
-    });
+    addMessageEvents(socket);
+    addRoomEvents(socket);
 });
 
 // init HTTP server

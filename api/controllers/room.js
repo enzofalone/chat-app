@@ -1,6 +1,16 @@
 const RoomModel = require("../models/room");
 
 class Room {
+    static makePublicRoom(roomObject) {
+        const { _id, name, createdAt, updatedAt } = roomObject;
+        return {
+            id: _id,
+            title: name,
+            createdAt,
+            updatedAt,
+        };
+    }
+
     static async create(data) {
         const room = new RoomModel(data);
 
@@ -19,8 +29,14 @@ class Room {
 
         try {
             const allRooms = await RoomModel.find(filter);
+            let allPublicRooms = [];
 
-            return { data: allRooms, error: null };
+            // change key names and remove irrelevant/sensible keys
+            allRooms.forEach((roomObject) => {
+                allPublicRooms.push(this.makePublicRoom(roomObject));
+            });
+
+            return { data: allPublicRooms, error: null };
         } catch (error) {
             console.error(error);
             return { data: null, error: error };
@@ -28,7 +44,6 @@ class Room {
     }
 
     static async findById(id) {
-        
         try {
             const room = await RoomModel.findById(id);
 
