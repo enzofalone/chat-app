@@ -8,6 +8,14 @@ const SOCKET_PORT = process.env.SOCKET_PORT
 
 const UI_PORT = process.env.UI_PORT ? Number(process.env.UI_PORT) : 5173;
 
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
+    ? process.env.GOOGLE_CLIENT_ID
+    : console.error("Missing GOOGLE_CLIENT_ID");
+
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
+    ? process.env.GOOGLE_CLIENT_SECRET
+    : console.error("Missing GOOGLE_CLIENT_SECRET");
+
 function getDatabaseUri() {
     const dbHost = process.env.DATABASE_HOST || "127.0.0.1";
     const dbPort = process.env.DATABASE_PORT || "27017";
@@ -25,5 +33,7 @@ module.exports = {
     PORT,
     SOCKET_PORT,
     UI_PORT,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
     getDatabaseUri,
 };

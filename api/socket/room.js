@@ -2,8 +2,6 @@ const createMessage = require("../utils/message");
 
 function addRoomEvents(socket) {
     socket.on("join-room", (data, callback) => {
-        console.log(data);
-
         socket.join(data.room);
         socket.leave(data.prevRoom);
 

@@ -1,8 +1,8 @@
 // maintain consistent message objects
-const createMessage = (id, name, text, room) => {
+const createMessage = (id, username, text, room) => {
     return {
         id,
-        username: name,
+        username,
         text,
         room,
     };
