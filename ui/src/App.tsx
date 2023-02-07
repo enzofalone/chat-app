@@ -1,4 +1,5 @@
 import { socket } from "./service/socket";
+
 import { useEffect, useState, SyntheticEvent } from "react";
 import ChatScreen from "./components/ChatScreen";
 import ChatInput from "./components/ChatInput";
@@ -94,6 +95,17 @@ function App() {
         setIsUsernameDone(true);
     };
 
+    const signInWithGoogle = async () => {
+        // await fetch(`${API_BASE_URL}auth/google`, {
+        //     mode: 'no-cors',
+        //     method: "get",
+        //     headers: {
+        //          "Content-Type": "application/json"
+        //     },
+        // });
+        window.open('http://localhost:3000/auth/google', '_self')
+    };
+
     useEffect(() => {
         socket.on("connect", () => {
             // nothing yet
@@ -109,6 +121,7 @@ function App() {
     return (
         <div className="App bg-gray-900 flex flex-row w-[100vw] h-[100vh]">
             {/* SIDEBAR */}
+            <button onClick={signInWithGoogle}>Click here</button>
             <div className={"w-[20vw] h-screen"}>
                 <Sidebar
                     roomList={roomList}
