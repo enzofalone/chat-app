@@ -95,15 +95,12 @@ function App() {
         setIsUsernameDone(true);
     };
 
-    const signInWithGoogle = async () => {
-        // await fetch(`${API_BASE_URL}auth/google`, {
-        //     mode: 'no-cors',
-        //     method: "get",
-        //     headers: {
-        //          "Content-Type": "application/json"
-        //     },
-        // });
-        window.open('http://localhost:3000/auth/google', '_self')
+    const openGoogleSignIn = async () => {
+        window.open("http://localhost:3000/auth/google", "_self");
+    };
+
+    const openGithubSignIn = async () => {
+        window.open("http://localhost:3000/auth/github", "_self");
     };
 
     useEffect(() => {
@@ -121,7 +118,8 @@ function App() {
     return (
         <div className="App bg-gray-900 flex flex-row w-[100vw] h-[100vh]">
             {/* SIDEBAR */}
-            <button onClick={signInWithGoogle}>Click here</button>
+            <button onClick={openGoogleSignIn}>Login with Google</button>
+            <button onClick={openGithubSignIn}>Login with Github</button>
             <div className={"w-[20vw] h-screen"}>
                 <Sidebar
                     roomList={roomList}
