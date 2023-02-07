@@ -116,6 +116,8 @@ function App() {
     }, []);
 
     return (
+        // TODO: ADD ROUTER (AND ADD LOGIN SCREEN WITH GOOGLE)
+
         <div className="App bg-gray-900 flex flex-row w-[100vw] h-[100vh]">
             {/* SIDEBAR */}
             <button onClick={openGoogleSignIn}>Login with Google</button>
