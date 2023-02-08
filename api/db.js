@@ -7,9 +7,9 @@ mongoose.connect(getDatabaseUri(), { useNewUrlParser: true });
 const db = mongoose.connection;
 
 db.on("error", (error) => {
-    console.log("--------");
-    console.log("Database error".red);
-    console.error(error);
+  console.log("--------");
+  console.log("Database error".red);
+  console.error(error);
 });
 
 db.once("open", () => console.log(`Connected succesfully to database!`.green));

@@ -27,19 +27,19 @@ const addRoomEvents = require("./socket/room");
 // middleware
 app.use(bodyParser.json());
 app.use(
-    cors({
-        origin: "http://localhost:5173",
-        methods: "GET,POST,PUT,DELETE",
-        credentials: true,
-    })
+  cors({
+    origin: "http://localhost:5173",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
 );
 app.use(morgan("tiny"));
 app.use(
-    cookieSession({
-        name: "session",
-        keys: ["app"],
-        maxAge: 24 * 60 * 60 * 100,
-    })
+  cookieSession({
+    name: "session",
+    keys: ["app"],
+    maxAge: 24 * 60 * 60 * 100,
+  })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -50,33 +50,33 @@ app.use("/rooms/", routesRooms);
 app.use("/messages/", routesMessages);
 
 app.get("/", (req, res, next) => {
-    res.json({ Hello: "world" });
+  res.json({ Hello: "world" });
 });
 
 // generic error handling
 app.use((err, req, res, next) => {
-    const status = err.status || 500;
-    const message = err.message;
+  const status = err.status || 500;
+  const message = err.message;
 
-    return res.status(status).json({
-        error: { message, status },
-    });
+  return res.status(status).json({
+    error: { message, status },
+  });
 });
 
 // initialize socket.io server
 const io = new Server(server, {
-    cors: {
-        origin: "*",
-    },
+  cors: {
+    origin: "*",
+  },
 });
 
 // set up socket.io events
 io.on("connection", (socket) => {
-    addMessageEvents(socket);
-    addRoomEvents(socket);
+  addMessageEvents(socket);
+  addRoomEvents(socket);
 });
 
 // init HTTP server
 server.listen(PORT, () => {
-    console.log(`Server running on`.blue, `http://localhost:${PORT}`);
+  console.log(`Server running on`.blue, `http://localhost:${PORT}`);
 });
