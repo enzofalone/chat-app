@@ -11,10 +11,12 @@ import { API_BASE_URL } from "./constants";
 import { createMessage } from "./utils/message";
 
 export type Message = {
+  createdAt: string;
   id: string | number | undefined;
-  name: string;
+  user?: User;
+  name?: string;
   text: string;
-  room: string | undefined;
+  roomName: string | undefined;
 };
 
 export type Room = {
@@ -24,28 +26,41 @@ export type Room = {
   updatedAt: string;
 };
 
+export type User = {
+  _id?: string;
+  username?: string;
+  picture?: string;
+  googleId?: string;
+};
+
 function App() {
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
-  const [isUsernameDone, setIsUsernameDone] = useState(false);
+  const [user, setUser] = useState<User>({});
   const [selectedRoom, setSelectedRoom] = useState<string>("");
   const [roomList, setRoomList] = useState<Room[]>([]);
   const [fetching, setFetching] = useState(false);
+
+  const isUserLoggedIn = user._id ? !!user._id.length : false;
 
   // TODO: MOVE EVERYTHING TO A CONTEXT
 
   const handleOnSend = (e: SyntheticEvent) => {
     e.preventDefault();
 
+    // TODO: Create toasts
     if (!inputValue.length) return;
+    if (!user) return;
     if (!selectedRoom) return;
+
+    // TODO: Check if inputValue includes profanity
 
     const newMessage = createMessage(
       socket.id,
-      username,
+      user,
       inputValue,
-      selectedRoom
+      selectedRoom,
+      Date.now().toString()
     );
 
     // send message to server
@@ -64,9 +79,10 @@ function App() {
 
     socket.emit(
       "join-room",
-      { prevRoom: selectedRoom, room: roomTitle, username },
-      (message: Message) => {
-        addMessage(message);
+      { prevRoom: selectedRoom, roomName: roomTitle, user: user },
+      (messages: Message[]) => {
+        // get message list from callback
+        setMessageList(messages);
       }
     );
 
@@ -74,25 +90,9 @@ function App() {
   };
 
   const addMessage = (message: Message) => {
-    setMessageList((prevList) => [...prevList, message]);
-  };
-
-  const fetchRooms = async () => {
-    setFetching(true);
-
-    try {
-      const response = await axios.get(`${API_BASE_URL}/rooms/`);
-
-      setRoomList(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleOnSubmitUsername = (e: SyntheticEvent) => {
-    e.preventDefault();
-
-    setIsUsernameDone(true);
+    setMessageList((prevList) => {
+      return [...prevList, message];
+    });
   };
 
   const openGoogleSignIn = async () => {
@@ -101,6 +101,44 @@ function App() {
 
   const openGithubSignIn = async () => {
     window.open(`${API_BASE_URL}/auth/github`, "_self");
+  };
+
+  const fetchRooms = async () => {
+    setFetching(true);
+
+    try {
+      const response = await axios.get(`${API_BASE_URL}/rooms/`);
+
+      if (response.data) setRoomList(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+
+    setFetching(false);
+  };
+
+  const fetchUser = async () => {
+    setFetching(true);
+
+    try {
+      const config = {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const response = await axios.get(
+        `${API_BASE_URL}/auth/login/success`,
+        config
+      );
+
+      if (response.data) {
+        setUser(response.data.user);
+      }
+    } catch (error) {}
+
+    setFetching(false);
   };
 
   useEffect(() => {
@@ -112,6 +150,7 @@ function App() {
       addMessage(message);
     });
 
+    fetchUser();
     fetchRooms();
   }, []);
 
@@ -120,8 +159,6 @@ function App() {
 
     <div className="App bg-gray-900 flex flex-row w-[100vw] h-[100vh]">
       {/* SIDEBAR */}
-      <button onClick={openGoogleSignIn}>Login with Google</button>
-      {/* <button onClick={openGithubSignIn}>Login with Github</button> */}
       <div className={"w-[20vw] h-screen"}>
         <Sidebar
           roomList={roomList}
@@ -135,14 +172,13 @@ function App() {
           title={selectedRoom.length ? selectedRoom : "Chat App 😮"}
         />
         <div className="message-list-container flex-grow min-h-0 overflow-auto">
-          {selectedRoom && isUsernameDone ? (
+          {selectedRoom && isUserLoggedIn === true ? (
             <ChatScreen messageList={messageList} />
           ) : (
             <NoRoomScreen
-              isUsernameDone={isUsernameDone}
-              username={username}
-              setUsername={setUsername}
-              handleOnSubmitUsername={handleOnSubmitUsername}
+              user={user}
+              isUsernameDone={isUserLoggedIn}
+              openGoogleSignIn={openGoogleSignIn}
             />
           )}
         </div>

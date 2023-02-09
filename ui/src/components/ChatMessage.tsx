@@ -3,8 +3,8 @@ import React, { FC } from "react";
 type Props = {
   messageContent: string;
   messageDate: string;
-  author: string;
-  imageSrc: string;
+  author: string | undefined;
+  imageSrc: string | undefined;
 };
 
 const ChatMessage: FC<Props> = ({

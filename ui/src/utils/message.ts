@@ -1,16 +1,20 @@
-import { Message } from "../App";
+import { Message, User } from "../App";
 
-// maintain consistent objects
+// maintain consistent object keys
 export const createMessage = (
   id: number | string,
-  name: string,
+  user: User,
   text: string,
-  room: string
+  roomName: string,
+  createdAt: string,
+  name?: string
 ): Message => {
   return {
     id,
-    name,
+    user: user || undefined,
+    name: name || undefined,
     text,
-    room,
+    roomName,
+    createdAt,
   };
 };

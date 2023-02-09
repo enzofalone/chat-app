@@ -17,17 +17,21 @@ const ChatScreen: FC<Props> = ({ messageList }) => {
 
   return (
     <div className="messages overflow-auto">
-      {messageList?.map((message, index) => {
-        return (
-          <ChatMessage
-            key={index}
-            author={message.name}
-            messageContent={message.text}
-            messageDate={""}
-            imageSrc={""}
-          />
-        );
-      }) || <></>}
+      {messageList?.length ? (
+        messageList?.map((message, index) => {
+          return (
+            <ChatMessage
+              key={index}
+              author={message.user?.username || message?.name}
+              messageContent={message.text}
+              messageDate={message?.createdAt}
+              imageSrc={message?.user?.picture}
+            />
+          );
+        })
+      ) : (
+        <></>
+      )}
       {/* empty div so every time component re-renders we can see the latest messages */}
       <div ref={messageEndRef} />
     </div>
