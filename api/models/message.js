@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const messageSchema = new mongoose.Schema(
   {
-    name: {
+    user: {
       type: String,
-      required: true,
+      required: false,
     },
     text: {
       type: String,
       required: true,
     },
-    roomId: {
+    roomName: {
       type: String,
       required: true,
     },

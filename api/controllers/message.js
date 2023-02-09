@@ -1,4 +1,5 @@
 const MessageModel = require("../models/message");
+const { parseMessage } = require("../utils/message");
 
 class Message {
   static makePublic(id, name, text, room) {
@@ -36,13 +37,21 @@ class Message {
     }
   }
 
-  static async findByRoom(roomId) {
-    const filter = { roomId };
+  static async findByRoom(roomName) {
+    const filter = { roomName };
+
+    let parsedMessages = [];
 
     try {
-      const messages = await MessageModel.find(filter);
+      // fetch messages, sort by chronological order
+      const messages = await MessageModel.find(filter).sort({ date: -1 });
+      
+      // parse JSON to JavaScript objects
+      messages.forEach((message, index) => {
+        parsedMessages.push(parseMessage(message));
+      });
 
-      return { data: messages, error: null };
+      return { data: parsedMessages, error: null };
     } catch (error) {
       console.error(error);
       return { data: null, error: error };

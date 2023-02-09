@@ -57,6 +57,17 @@ class User {
     }
   }
 
+  static async findOne(filter) {
+    try {
+      const user = await UserModel.findOne(filter);
+
+      return user;
+    } catch (error) {
+      console.error(error);
+      return { user: null, error: error };
+    }
+  }
+
   static async findBy(filter) {
     try {
       const users = await UserModel.find(filter);

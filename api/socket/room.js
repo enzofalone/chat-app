@@ -1,16 +1,26 @@
-const createMessage = require("../utils/message");
+const { createMessage } = require("../utils/message");
+const Message = require("../controllers/message");
 
 function addRoomEvents(socket) {
-  socket.on("join-room", (data, callback) => {
+  socket.on("join-room", async (data, callback) => {
     socket.join(data.room);
     socket.leave(data.prevRoom);
 
-    // Send callback message to the user creating the
-    callback({
-      username: "Server",
-      text: "Successfully joined " + data.room + "!",
-    });
+    // fetch message list
+    const newMessages = await Message.findByRoom(data.roomName);
+    
+    // create server message for user's client
+    const serverMessage = createMessage(
+      0,
+      "Server",
+      `Successfully joined ${data.roomName}!`,
+      data.roomName
+    );
 
+    // send message list via callback
+    callback([...newMessages.data, serverMessage]);
+
+    // message to all other users in previous room
     socket
       .to(data.prevRoom)
       .emit(
@@ -22,7 +32,7 @@ function addRoomEvents(socket) {
           data.prevRoom
         )
       );
-
+    // message to all other users in new room
     socket
       .to(data.room)
       .emit(
@@ -34,8 +44,6 @@ function addRoomEvents(socket) {
           data.room
         )
       );
-
-    console.log(socket.id, "joined", data.room);
   });
 }
 

@@ -27,40 +27,47 @@ passport.use(
 
       const user = await User.findByOrCreate(filter, data);
 
-      console.log(user);
+      console.log(profile);
+
+      done(null, profile);
+    }
+  )
+);
+
+passport.use(
+  new GitHubStrategy(
+    {
+      clientID: GITHUB_CLIENT_ID,
+      clientSecret: GITHUB_CLIENT_SECRET,
+      callbackURL: "/auth/github/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      // const filter = { githubId: profile.id };
+
+      // const data = {
+      //   googleId: profile.id,
+      //   username: profile.displayName || profile.username,
+      //   picture: profile.picture,
+      // };
+
+      // const user = await User.findByOrCreate(filter, data);
 
       return done(null, profile);
     }
   )
 );
 
-// passport.use(
-//   new GitHubStrategy(
-//     {
-//       clientID: GITHUB_CLIENT_ID,
-//       clientSecret: GITHUB_CLIENT_SECRET,
-//       callbackURL: "/auth/github/callback",
-//     },
-//     async (accessToken, refreshToken, profile, done) => {
-//       // const filter = { githubId: profile.id };
-
-//       // const data = {
-//       //   googleId: profile.id,
-//       //   username: profile.displayName || profile.username,
-//       //   picture: profile.picture,
-//       // };
-
-//       // const user = await User.findByOrCreate(filter, data);
-
-//       return done(null, profile);
-//     }
-//   )
-// );
-
-passport.serializeUser((user, done) => {
-  done(null, user);
+passport.serializeUser((providerData, done) => {
+  done(null, providerData);
 });
 
-passport.deserializeUser((user, done) => {
-  done(null, user);
+passport.deserializeUser(async (providerData, done) => {
+  try {
+    if (providerData.provider === "google") {
+      const user = await User.findOne({ googleId: providerData.id });
+      done(null, user);
+    }
+  } catch (error) {
+    console.error(error);
+  }
 });

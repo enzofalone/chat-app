@@ -15,9 +15,9 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/:roomId", async (req, res) => {
-  const { roomId } = req.params;
+  const { roomName } = req.params;
 
-  const messages = await Message.findByRoom(roomId);
+  const messages = await Message.findByRoom(roomName);
 
   if (messages.data) {
     res.status(200).json(messages.data);
