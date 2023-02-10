@@ -24,6 +24,8 @@ const routesMessages = require("./routes/messages");
 
 // middleware
 app.use(bodyParser.json());
+
+// cors
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -32,8 +34,10 @@ app.use(
   })
 );
 
+// logging
 app.use(morgan("short"));
 
+// cookies
 app.use(
   cookieSession({
     name: "session",
@@ -42,6 +46,7 @@ app.use(
   })
 );
 
+// passport.js
 app.use(passport.initialize());
 app.use(passport.session());
 

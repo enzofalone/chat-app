@@ -15,6 +15,15 @@ const init = (server) => {
   io.on("connection", (socket) => {
     addMessageEvents(socket);
     addRoomEvents(socket);
+
+    // error handling
+    socket.on("connect_error", () => {
+      console.log("Connection failed");
+    });
+    
+    socket.on("reconnect_failed", () => {
+      console.log("Reconnection failed");
+    });
   });
 };
 
