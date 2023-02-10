@@ -11,18 +11,16 @@ const morgan = require("morgan");
 const http = require("http");
 const server = http.createServer(app);
 const db = require("./db");
-const { Server } = require("socket.io");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
+
+// socket server
+const ioServer = require("./socket")(server);
 
 // routes
 const routesAuth = require("./routes/auth");
 const routesRooms = require("./routes/rooms");
 const routesMessages = require("./routes/messages");
-
-// socket events
-const addMessageEvents = require("./socket/message");
-const addRoomEvents = require("./socket/room");
 
 // middleware
 app.use(bodyParser.json());
@@ -64,19 +62,6 @@ app.use((err, req, res, next) => {
   return res.status(status).json({
     error: { message, status },
   });
-});
-
-// initialize socket.io server
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
-});
-
-// set up socket.io events
-io.on("connection", (socket) => {
-  addMessageEvents(socket);
-  addRoomEvents(socket);
 });
 
 // init HTTP server
