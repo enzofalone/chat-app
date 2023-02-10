@@ -50,10 +50,6 @@ app.use("/auth/", routesAuth);
 app.use("/rooms/", routesRooms);
 app.use("/messages/", routesMessages);
 
-app.get("/", (req, res, next) => {
-  res.json({ Hello: "world" });
-});
-
 // generic error handling
 app.use((err, req, res, next) => {
   const status = err.status || 500;
