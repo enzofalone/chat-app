@@ -58,7 +58,7 @@ function App() {
       user,
       inputValue,
       selectedRoom,
-      Date.now().toString()
+      new Date(Date.now()).toISOString()
     );
 
     // send message to server
@@ -129,7 +129,6 @@ function App() {
     socket.on("connect", () => {});
 
     socket.on("handshake", (receivedRoomList: Room[]) => {
-      console.log(receivedRoomList);
       setRoomList(receivedRoomList);
     });
 
