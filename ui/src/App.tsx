@@ -1,5 +1,4 @@
 import { socket } from "./service/socket";
-
 import { useEffect, useState, SyntheticEvent } from "react";
 import ChatScreen from "./components/ChatScreen";
 import ChatInput from "./components/ChatInput";
@@ -42,7 +41,6 @@ function App() {
   const [fetching, setFetching] = useState(false);
 
   const isUserLoggedIn = user._id ? !!user._id.length : false;
-
   // TODO: MOVE EVERYTHING TO A CONTEXT
 
   const handleOnSend = (e: SyntheticEvent) => {
@@ -103,20 +101,6 @@ function App() {
     window.open(`${API_BASE_URL}/auth/github`, "_self");
   };
 
-  const fetchRooms = async () => {
-    setFetching(true);
-
-    try {
-      const response = await axios.get(`${API_BASE_URL}/rooms/`);
-
-      if (response.data) setRoomList(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-
-    setFetching(false);
-  };
-
   const fetchUser = async () => {
     setFetching(true);
 
@@ -142,16 +126,24 @@ function App() {
   };
 
   useEffect(() => {
-    socket.on("connect", () => {
-      // nothing yet
+    socket.on("connect", () => {});
+
+    socket.on("handshake", (receivedRoomList: Room[]) => {
+      console.log(receivedRoomList);
+      setRoomList(receivedRoomList);
     });
 
     socket.on("receive-message", (message: Message) => {
       addMessage(message);
     });
 
+    socket.on("connect_error", () => {
+      setTimeout(() => {
+        socket.connect();
+      }, 1000);
+    });
+
     fetchUser();
-    fetchRooms();
   }, []);
 
   return (
