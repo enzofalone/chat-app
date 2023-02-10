@@ -1,14 +1,16 @@
 // maintain consistent message objects
-const createMessage = (id, username, text, roomName) => {
+const createMessage = (id, name, text, roomName,createdAt) => {
   return {
     id,
-    username,
+    name,
     text,
-    roomName,
+    roomName, 
+    createdAt
   };
 };
 
 // when getting back from database, parse back into a JavaScript Object
+// for some reason I can't pass back the same object because its missing these keys??
 const parseMessage = (messageObject) => {
   return {
     createdAt: messageObject.createdAt,
