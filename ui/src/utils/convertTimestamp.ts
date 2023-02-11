@@ -1,20 +1,36 @@
-const isToday = (someDate: Date): boolean => {
+const isToday = (timestampDate: Date): boolean => {
   const today = new Date();
   return (
-    someDate.getDate() == today.getDate() &&
-    someDate.getMonth() == today.getMonth() &&
-    someDate.getFullYear() == today.getFullYear()
+    timestampDate.getDate() == today.getDate() &&
+    timestampDate.getMonth() == today.getMonth() &&
+    timestampDate.getFullYear() == today.getFullYear()
+  );
+};
+
+const isYesterday = (timestampDate: Date): boolean => {
+  const yesterday = new Date(new Date().setHours(-1));
+
+  return (
+    timestampDate.getDate() == yesterday.getDate() &&
+    timestampDate.getMonth() == yesterday.getMonth() &&
+    timestampDate.getFullYear() == yesterday.getFullYear()
   );
 };
 
 export const convertTimestamp = (timestamp: string): string => {
-  const today = new Date();
+  const timestampDate = new Date(timestamp);
 
-  //TODO: check if yesterday and return so
+  const time = timestampDate.toLocaleTimeString([], { timeStyle: "short" });
+  const date = timestampDate.toLocaleDateString();
 
-  if (isToday(new Date(timestamp))) {
-    return new Date(timestamp).toLocaleTimeString();
-  } else {
-    return `${new Date(timestamp).toLocaleDateString()}`;
+  // discord-like format
+  if (isToday(timestampDate)) {
+    return time;
   }
+
+  if (isYesterday(timestampDate)) {
+    return `Yesterday at ${time}`;
+  }
+
+  return `${date} ${time}`;
 };
