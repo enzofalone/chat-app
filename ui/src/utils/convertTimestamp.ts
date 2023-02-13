@@ -1,3 +1,4 @@
+
 const isToday = (timestampDate: Date): boolean => {
   const today = new Date();
   return (
@@ -15,6 +16,17 @@ const isYesterday = (timestampDate: Date): boolean => {
     timestampDate.getMonth() == yesterday.getMonth() &&
     timestampDate.getFullYear() == yesterday.getFullYear()
   );
+};
+
+// TODO: move this to a class
+
+export const convertCompleteTimestamp = (timestamp: string): string => {
+  const timestampDate = new Date(timestamp);
+
+  const time = timestampDate.toLocaleTimeString([], { timeStyle: "short" });
+  const date = timestampDate.toLocaleDateString();
+
+  return `${date} ${time}`;
 };
 
 export const convertTimestamp = (timestamp: string): string => {

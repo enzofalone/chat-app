@@ -7,7 +7,8 @@ import ChatHeader from "./components/ChatHeader";
 import axios from "axios";
 import NoRoomScreen from "./components/NoRoomScreen";
 import { API_BASE_URL } from "./constants";
-import { createMessage } from "./utils/message";
+import { createMessage, generateTemporaryId } from "./utils/message";
+import "react-tooltip/dist/react-tooltip.css";
 
 export type Message = {
   createdAt: string;
@@ -16,7 +17,15 @@ export type Message = {
   name?: string;
   text: string;
   roomName: string | undefined;
+  status?: MessageStatus;
+  success?: boolean;
 };
+
+export enum MessageStatus {
+  PENDING,
+  ERROR,
+  DELIVERED,
+}
 
 export type Room = {
   id: string | number;
@@ -35,6 +44,7 @@ export type User = {
 function App() {
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
+  const [pendingList, setPendingList] = useState<Message[]>([]);
   const [user, setUser] = useState<User>({});
   const [selectedRoom, setSelectedRoom] = useState<string>("");
   const [roomList, setRoomList] = useState<Room[]>([]);
@@ -47,27 +57,38 @@ function App() {
     e.preventDefault();
 
     // TODO: Create toasts
+    // TODO: Create error handling and create UI for it
     if (!inputValue.length) return;
     if (!user) return;
     if (!selectedRoom) return;
-
-    // TODO: Check if inputValue includes profanity
+    if (!isUserLoggedIn) return;
 
     const newMessage = createMessage(
-      socket.id,
+      generateTemporaryId(),
       user,
       inputValue,
       selectedRoom,
-      new Date(Date.now()).toISOString()
+      new Date(Date.now()).toISOString(),
+      MessageStatus.PENDING
     );
-
-    // send message to server
-    socket.emit("send-message", newMessage);
 
     // add message to client
     addMessage(newMessage);
 
+    // send message to server
+    socket.emit("send-message", newMessage, isDeliveredCallback);
     setInputValue("");
+  };
+
+  const isDeliveredCallback = (
+    id: string,
+    messageData: Message,
+    success: boolean
+  ) => {
+    setPendingList((prevList) => [
+      ...prevList,
+      { ...messageData, id, success },
+    ]);
   };
 
   const handleOnChangeRoom = (e: SyntheticEvent, roomTitle: string) => {
@@ -97,10 +118,6 @@ function App() {
     window.open(`${API_BASE_URL}/auth/google`, "_self");
   };
 
-  const openGithubSignIn = async () => {
-    window.open(`${API_BASE_URL}/auth/github`, "_self");
-  };
-
   const fetchUser = async () => {
     setFetching(true);
 
@@ -124,6 +141,37 @@ function App() {
 
     setFetching(false);
   };
+
+  const setToDelivered = () => {
+    // get all the ID's received by send-message callbacks and set messages to delivered status
+    const pendingListCopy = pendingList;
+
+    while (pendingListCopy.length) {
+      const pendingMessage = pendingListCopy.pop();
+
+      if (pendingMessage) {
+        const messageIndex = messageList.findIndex(
+          (mess) => mess.id === pendingMessage.id
+        );
+
+        const status = pendingMessage.success
+          ? MessageStatus.DELIVERED
+          : MessageStatus.ERROR;
+
+        setMessageList((list) => {
+          list[messageIndex].status = status;
+          return list;
+        });
+      }
+    }
+    setPendingList([]);
+  };
+
+  useEffect(() => {
+    if (pendingList.length) {
+      setToDelivered();
+    }
+  }, [pendingList]);
 
   useEffect(() => {
     socket.on("connect", () => {});

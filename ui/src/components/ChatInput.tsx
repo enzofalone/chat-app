@@ -31,6 +31,7 @@ const ChatInput: FC<Props> = ({
           name={"message"}
           autoFocus={true}
           value={inputValue}
+          autoComplete={'off'}
           onChange={handleOnChange}
         />
       </form>

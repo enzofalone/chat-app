@@ -12,7 +12,7 @@ const ChatScreen: FC<Props> = ({ messageList }) => {
   const messageEndRef = useRef<any>();
 
   useEffect(() => {
-    messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    messageEndRef.current.scrollIntoView();
   }, [messageList]);
 
   return (
@@ -25,7 +25,9 @@ const ChatScreen: FC<Props> = ({ messageList }) => {
               author={message.user?.username || message?.name}
               messageContent={message.text}
               messageDate={message?.createdAt}
+              messageStatus={message?.status}
               imageSrc={message?.user?.picture}
+
             />
           );
         })
