@@ -8,7 +8,6 @@ import axios from "axios";
 import NoRoomScreen from "./components/NoRoomScreen";
 import { API_BASE_URL } from "./constants";
 import { createMessage, generateTemporaryId } from "./utils/message";
-import "react-tooltip/dist/react-tooltip.css";
 
 export type Message = {
   createdAt: string;
