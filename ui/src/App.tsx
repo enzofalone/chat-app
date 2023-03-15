@@ -1,13 +1,20 @@
 import { socket } from "./service/socket";
 import { useEffect, useState, SyntheticEvent } from "react";
-import ChatScreen from "./components/ChatScreen";
-import ChatInput from "./components/ChatInput";
-import Sidebar from "./components/Sidebar";
-import ChatHeader from "./components/ChatHeader";
+import ChatScreen from "./components/Chat/ChatScreen";
+import ChatInput from "./components/Chat/ChatInput";
+import Sidebar from "./components/Sidebar/Sidebar";
+import ChatHeader from "./components/Chat/ChatHeader";
 import axios from "axios";
-import NoRoomScreen from "./components/NoRoomScreen";
+import NoChannelScreen from "./components/NoChannelScreen";
 import { API_BASE_URL } from "./constants";
 import { createMessage, generateTemporaryId } from "./utils/message";
+
+export type Server = {
+  createdAt: string;
+  id: string;
+  name?: string;
+  channels: Channel[];
+};
 
 export type Message = {
   createdAt: string;
@@ -15,7 +22,7 @@ export type Message = {
   user?: User;
   name?: string;
   text: string;
-  roomName: string | undefined;
+  channelId: string | undefined;
   status?: MessageStatus;
   success?: boolean;
 };
@@ -26,9 +33,9 @@ export enum MessageStatus {
   DELIVERED,
 }
 
-export type Room = {
-  id: string | number;
-  title: string;
+export type Channel = {
+  id: string;
+  name: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -44,10 +51,17 @@ function App() {
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [pendingList, setPendingList] = useState<Message[]>([]);
+
   const [user, setUser] = useState<User>({});
-  const [selectedRoom, setSelectedRoom] = useState<string>("");
-  const [roomList, setRoomList] = useState<Room[]>([]);
-  const [fetching, setFetching] = useState(false);
+
+  const [selectedChannel, setSelectedChannel] = useState<Channel>();
+  const [selectedServer, setSelectedServer] = useState<Server>();
+
+  const [channelList, setChannelList] = useState<Channel[]>([]);
+  const [serverList, setServerList] = useState<Server[]>([]);
+  const [fetchingUser, setFetchingUser] = useState(false);
+  const [fetchingServer, setFetchingServer] = useState(false);
+  const [fetchingChannel, setFetchingChannel] = useState(false);
 
   const isUserLoggedIn = user._id ? !!user._id.length : false;
   // TODO: MOVE EVERYTHING TO A CONTEXT
@@ -56,17 +70,16 @@ function App() {
     e.preventDefault();
 
     // TODO: Create toasts
-    // TODO: Create error handling and create UI for it
     if (!inputValue.length) return;
     if (!user) return;
-    if (!selectedRoom) return;
+    if (!selectedChannel) return;
     if (!isUserLoggedIn) return;
 
     const newMessage = createMessage(
       generateTemporaryId(),
       user,
       inputValue,
-      selectedRoom,
+      selectedChannel.id,
       new Date(Date.now()).toISOString(),
       MessageStatus.PENDING
     );
@@ -90,21 +103,25 @@ function App() {
     ]);
   };
 
-  const handleOnChangeRoom = (e: SyntheticEvent, roomTitle: string) => {
-    e.preventDefault();
-
+  const handleOnChangeChannel = (newChannel: Channel) => {
     setMessageList([]);
 
     socket.emit(
-      "join-room",
-      { prevRoom: selectedRoom, roomName: roomTitle, user: user },
+      "join-channel",
+      { prevChannel: selectedChannel, newChannel, user: user },
       (messages: Message[]) => {
         // get message list from callback
         setMessageList(messages);
       }
     );
 
-    setSelectedRoom(roomTitle);
+    setSelectedChannel(newChannel);
+  };
+
+  const handleOnChangeServer = (newServer: Server) => {
+    setMessageList([]);
+
+    setSelectedServer(newServer);
   };
 
   const addMessage = (message: Message) => {
@@ -118,7 +135,7 @@ function App() {
   };
 
   const fetchUser = async () => {
-    setFetching(true);
+    setFetchingUser(true);
 
     try {
       const config = {
@@ -138,7 +155,7 @@ function App() {
       }
     } catch (error) {}
 
-    setFetching(false);
+    setFetchingUser(false);
   };
 
   const setToDelivered = () => {
@@ -166,6 +183,66 @@ function App() {
     setPendingList([]);
   };
 
+  const fetchServers = async () => {
+    if (user._id) {
+      setFetchingServer(true);
+
+      try {
+        const config = {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        const receivedServerList = await axios.get(
+          `${API_BASE_URL}/server`,
+          config
+        );
+        console.log(receivedServerList.data);
+        setServerList(receivedServerList.data || []);
+        setSelectedServer(receivedServerList.data[0]);
+      } catch (error) {
+        console.error(error);
+      }
+
+      setFetchingServer(false);
+    }
+  };
+
+  const fetchChannels = async () => {
+    if (!selectedServer) return;
+    if (!user._id) return;
+
+    setFetchingChannel(true);
+
+    try {
+      const config = {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const receivedChannelList = await axios.get(
+        `${API_BASE_URL}/channel/?serverId=${selectedServer?.id}`,
+        config
+      );
+      console.log(receivedChannelList.data);
+      setChannelList(receivedChannelList.data || []);
+    } catch (error) {
+      console.error(error);
+    }
+
+    setFetchingChannel(false);
+  };
+
+  useEffect(() => {
+    fetchServers();
+  }, [user]);
+
+  useEffect(() => {
+    fetchChannels();
+  }, [serverList]);
+
   useEffect(() => {
     if (pendingList.length) {
       setToDelivered();
@@ -174,10 +251,6 @@ function App() {
 
   useEffect(() => {
     socket.on("connect", () => {});
-
-    socket.on("handshake", (receivedRoomList: Room[]) => {
-      setRoomList(receivedRoomList);
-    });
 
     socket.on("receive-message", (message: Message) => {
       addMessage(message);
@@ -195,25 +268,34 @@ function App() {
   return (
     // TODO: ADD ROUTER (AND ADD LOGIN SCREEN WITH GOOGLE)
 
-    <div className="App bg-gray-900 flex flex-row w-[100vw] h-[100vh]">
+    <div className="App bg-[#1c1c24] flex flex-row w-[100vw] h-[100vh]">
       {/* SIDEBAR */}
       <div className={"w-[20vw] h-screen"}>
         <Sidebar
-          roomList={roomList}
-          selectedRoom={selectedRoom}
-          handleOnChangeRoom={handleOnChangeRoom}
+          serverList={serverList}
+          setServerList={setServerList}
+          channelList={channelList}
+          setChannelList={setChannelList}
+          handleOnChangeChannel={handleOnChangeChannel}
+          selectedChannel={selectedChannel}
+          selectedServer={selectedServer}
+          setSelectedServer={setSelectedServer}
+          setSelectedChannel={setSelectedChannel}
+          handleOnChangeServer={handleOnChangeServer}
         />
       </div>
       {/* MAIN APP COMPONENTS */}
       <div className="flex-grow flex flex-col">
         <ChatHeader
-          title={selectedRoom.length ? selectedRoom : "Chat App 😮"}
+          title={
+            selectedChannel?.name.length ? selectedChannel.name : "Chat App 😮"
+          }
         />
         <div className="message-list-container flex-grow min-h-0 overflow-auto">
-          {selectedRoom && isUserLoggedIn === true ? (
+          {selectedChannel && isUserLoggedIn ? (
             <ChatScreen messageList={messageList} />
           ) : (
-            <NoRoomScreen
+            <NoChannelScreen
               user={user}
               isUsernameDone={isUserLoggedIn}
               openGoogleSignIn={openGoogleSignIn}

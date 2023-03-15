@@ -9,7 +9,7 @@ type Props = {
   isUsernameDone: boolean;
 };
 
-const NoRoomScreen: FC<Props> = ({
+const NoChannelScreen: FC<Props> = ({
   user,
   openGoogleSignIn,
   isUsernameDone,
@@ -39,4 +39,4 @@ const NoRoomScreen: FC<Props> = ({
   );
 };
 
-export default NoRoomScreen;
+export default NoChannelScreen;

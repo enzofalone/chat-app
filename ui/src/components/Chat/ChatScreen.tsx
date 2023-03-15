@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
-import { Message } from "../App";
+import { Message } from "../../App";
 import ChatMessage from "./ChatMessage";
 
 type Props = {

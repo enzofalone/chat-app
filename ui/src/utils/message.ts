@@ -10,7 +10,7 @@ export const createMessage = (
   id: number | string,
   user: User,
   text: string,
-  roomName: string,
+  channelId: string,
   createdAt: string,
   status?: MessageStatus,
   name?: string
@@ -21,7 +21,7 @@ export const createMessage = (
     name: name || undefined,
     text,
     status,
-    roomName,
+    channelId,
     createdAt,
   };
 };

@@ -6,7 +6,7 @@ type Props = {
 
 const ChatHeader: FC<Props> = ({ title }: Props) => {
   return (
-    <div className="w-full flex justify-start  py-3 border-b-2 border-gray-900 bg-gray-800">
+    <div className="w-full flex justify-start  py-3 border-b-[1px] border-gray-700 bg-[#1c1c24]">
       <span className="text-center text-lg mx-3 px-2 font-bold">{title}</span>
     </div>
   );
