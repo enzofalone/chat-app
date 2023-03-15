@@ -3,9 +3,9 @@ const Message = require("../controllers/message");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { name, text, roomId } = req.body;
+  const { name, text, channelId } = req.body;
 
-  const newMessage = await Message.create({ name, text, roomId });
+  const newMessage = await Message.create(name, text, channelId);
 
   if (newMessage.data) {
     res.status(201).json(newMessage.data);
@@ -14,10 +14,10 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/:roomId", async (req, res) => {
-  const { roomName } = req.params;
+router.get("/:channelId", async (req, res) => {
+  const { channelId } = req.params;
 
-  const messages = await Message.findByRoom(roomName);
+  const messages = await Message.findByChannel(channelId);
 
   if (messages.data) {
     res.status(200).json(messages.data);

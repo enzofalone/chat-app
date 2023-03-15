@@ -1,7 +1,7 @@
 const { Server } = require("socket.io");
-const Room = require("../controllers/room");
+const Channel = require("../controllers/channel");
 const addMessageEvents = require("./message");
-const addRoomEvents = require("./room");
+const addChannelEvents = require("./channel");
 
 const init = (server) => {
   // initialize socket.io server
@@ -14,13 +14,11 @@ const init = (server) => {
   // set up socket.io events
   io.on("connection", async (socket) => {
     addMessageEvents(socket);
-    addRoomEvents(socket);
+    addChannelEvents(socket);
 
-    console.log("Connected sockets is now: " + socket.adapter.sids.size);
+    console.log("Connected sockets are now: " + socket.adapter.sids.size);
 
-    const roomList = await Room.getAll();
-
-    socket.emit("handshake", roomList.data);
+    // socket.emit("handshake", channelList.data);
 
     // error handling
     socket.on("connect_error", () => {

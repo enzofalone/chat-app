@@ -1,18 +1,22 @@
-const MessageModel = require("../models/message");
+const MessageModel = require("../model/message");
 const { parseMessage } = require("../utils/message");
+const { parseObjectId } = require("../utils/parse");
 class Message {
-  static makePublic(id, name, text, roomId) {
+  static makePublic(id, name, text, channelId) {
     return {
       id,
       name,
       text,
-      roomId,
+      channelId,
     };
   }
 
-  // server messages don't need a callback
-  static async createServerMessage(data) {
-    const message = new MessageModel(data);
+  static async createServerMessage(name, text, channelId) {
+    const message = new MessageModel({
+      name,
+      text,
+      channelId: parseObjectId(channelId),
+    });
 
     // store in database and return it to the user
     try {
@@ -57,8 +61,8 @@ class Message {
     }
   }
 
-  static async findByRoom(roomName, page) {
-    const filter = { roomName };
+  static async findByChannel(channelId, page) {
+    const filter = { channelId };
     const perPage = 25;
     const skip = perPage * (page - 1);
 
@@ -66,8 +70,7 @@ class Message {
 
     try {
       // fetch messages, sort by chronological order
-      const messages = await MessageModel.find(filter)
-        .sort({ createdAt: 1 })
+      const messages = await MessageModel.find(filter).sort({ createdAt: 1 });
 
       // parse JSON to JavaScript objects
       messages.forEach((message, index) => {

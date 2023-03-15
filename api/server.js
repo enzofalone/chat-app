@@ -19,8 +19,9 @@ const ioServer = require("./socket")(server);
 
 // routes
 const routesAuth = require("./routes/auth");
-const routesRooms = require("./routes/rooms");
+const routesRooms = require("./routes/channels");
 const routesMessages = require("./routes/messages");
+const routesServer = require("./routes/server");
 
 // middleware
 app.use(bodyParser.json());
@@ -52,9 +53,9 @@ app.use(passport.session());
 
 // set up app routes
 app.use("/auth/", routesAuth);
-app.use("/rooms/", routesRooms);
+app.use("/channel/", routesRooms);
 app.use("/messages/", routesMessages);
-
+app.use("/server/", routesServer);
 // generic error handling
 app.use((err, req, res, next) => {
   const status = err.status || 500;

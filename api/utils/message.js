@@ -1,11 +1,11 @@
 // maintain consistent message objects
-const createMessage = (id, name, text, roomName,createdAt) => {
+const createMessage = (id, name, text, channelName, createdAt) => {
   return {
     id,
     name,
     text,
-    roomName, 
-    createdAt
+    channelName,
+    createdAt,
   };
 };
 

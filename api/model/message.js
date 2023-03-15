@@ -10,8 +10,9 @@ const messageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    roomName: {
-      type: String,
+    channelId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Channel",
       required: true,
     },
   },

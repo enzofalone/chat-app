@@ -1,4 +1,4 @@
-const UserModel = require("../models/user");
+const UserModel = require("../model/user");
 
 class User {
   static makePublicUser(userObject) {
@@ -36,7 +36,7 @@ class User {
 
       // change key names and remove irrelevant/sensible keys
       allPublicUsers.forEach((userObject) => {
-        allPublicUsers.push(this.makePublicRoom(userObject));
+        allPublicUsers.push(this.makePublicUser(userObject));
       });
 
       return { data: allPublicUsers, error: null };
