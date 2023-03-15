@@ -120,6 +120,7 @@ function App() {
 
   const handleOnChangeServer = (newServer: Server) => {
     setMessageList([]);
+    setChannelList([]);
 
     setSelectedServer(newServer);
   };
@@ -211,6 +212,7 @@ function App() {
 
   const fetchChannels = async () => {
     if (!selectedServer) return;
+    // todo parse user keys to whatever we need
     if (!user._id) return;
 
     setFetchingChannel(true);
@@ -228,6 +230,10 @@ function App() {
       );
       console.log(receivedChannelList.data);
       setChannelList(receivedChannelList.data || []);
+
+      if (receivedChannelList.data.length) {
+        handleOnChangeChannel(receivedChannelList.data[0]);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -241,7 +247,7 @@ function App() {
 
   useEffect(() => {
     fetchChannels();
-  }, [serverList]);
+  }, [serverList, selectedServer]);
 
   useEffect(() => {
     if (pendingList.length) {

@@ -36,14 +36,18 @@ function SidebarServer({
         <Droppable droppableId="droppable">
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              {serverList.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
+              {serverList.map((currentServer, index) => (
+                <Draggable
+                  key={currentServer.id}
+                  draggableId={currentServer.id}
+                  index={index}
+                >
                   {(provided, snapshot) => (
                     <ServerButton
                       handleOnChangeServer={handleOnChangeServer}
                       provided={provided}
                       snapshot={snapshot}
-                      item={item}
+                      serverData={currentServer}
                     />
                   )}
                 </Draggable>
