@@ -292,11 +292,7 @@ function App() {
       </div>
       {/* MAIN APP COMPONENTS */}
       <div className="flex-grow flex flex-col">
-        <ChatHeader
-          title={
-            selectedChannel?.name.length ? selectedChannel.name : "Chat App 😮"
-          }
-        />
+        <ChatHeader title={selectedChannel?.name ? selectedChannel.name : ""} />
         <div className="message-list-container flex-grow min-h-0 overflow-auto">
           {selectedChannel && isUserLoggedIn ? (
             <ChatScreen messageList={messageList} />

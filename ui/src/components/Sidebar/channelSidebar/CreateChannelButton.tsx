@@ -8,9 +8,14 @@ import { API_BASE_URL } from "../../../constants";
 type Props = {
   serverId: string | undefined;
   handleOnChangeChannel: (newChannel: Channel) => void;
+  setChannelList: Dispatch<any>; // TODO: remove any
 };
 
-function CreateChannelButton({ serverId, handleOnChangeChannel }: Props) {
+function CreateChannelButton({
+  serverId,
+  handleOnChangeChannel,
+  setChannelList,
+}: Props) {
   const [openedModal, { open, close }] = useDisclosure(false);
   const [inputs, setInputs] = useState({
     channelName: "",
@@ -42,6 +47,9 @@ function CreateChannelButton({ serverId, handleOnChangeChannel }: Props) {
 
       if (newChannel.data) {
         handleOnChangeChannel(newChannel.data);
+        setChannelList((prevList: Channel[]) => {
+          return [...prevList, newChannel.data]
+        });
       }
     } catch (error) {
       console.error(error);

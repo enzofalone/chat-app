@@ -1,5 +1,4 @@
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import ServerButton from "../serverSidebar/ServerButton";
 import CreateChannelButton from "./CreateChannelButton";
 import SidebarChannelButton from "./ChannelButton";
 import { Channel } from "../../../App";
@@ -61,6 +60,7 @@ const SidebarChannel = ({
       <CreateChannelButton
         serverId={serverId}
         handleOnChangeChannel={handleOnChangeChannel}
+        setChannelList={setChannelList}
       />
     </div>
   );
