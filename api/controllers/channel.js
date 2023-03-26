@@ -32,7 +32,7 @@ class Channel {
 
     try {
       const channel = new ChannelModel(newChannelData);
-      const savedChannel = channel.save();
+      const savedChannel = await channel.save();
 
       return { data: this.makePublicChannel(savedChannel) };
     } catch (error) {
