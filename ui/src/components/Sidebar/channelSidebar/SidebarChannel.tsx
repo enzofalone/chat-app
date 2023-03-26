@@ -28,6 +28,8 @@ const SidebarChannel = ({
       setChannelList(newItems);
     }
   };
+  console.log(channelList);
+  
 
   return (
     <div className="px-2 py-2 bg-[#16141f] w-full h-full border-r-[1px] border-gray-700">
@@ -38,11 +40,12 @@ const SidebarChannel = ({
               {channelList.map((currentChannel, index) => (
                 <Draggable
                   key={currentChannel.id}
-                  draggableId={currentChannel.id}
+                  draggableId={currentChannel.id || index.toString()}
                   index={index}
                 >
                   {(provided, snapshot) => (
                     <SidebarChannelButton
+                      key={currentChannel.id || index}
                       provided={provided}
                       snapshot={snapshot}
                       channelData={currentChannel}

@@ -48,12 +48,14 @@ function CreateChannelButton({
       if (newChannel.data) {
         handleOnChangeChannel(newChannel.data);
         setChannelList((prevList: Channel[]) => {
-          return [...prevList, newChannel.data]
+          return [...prevList, newChannel.data];
         });
+        close();
       }
     } catch (error) {
       console.error(error);
     }
+
   };
 
   return (
