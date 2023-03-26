@@ -8,7 +8,7 @@ function addMessageEvents(socket) {
     const messageObject = {
       user: JSON.stringify(message.user),
       text: message.text,
-      roomName: message.roomName,
+      channelId: message.channelId,
     };
 
     const newMessageResult = await Message.create(messageObject);
