@@ -1,5 +1,5 @@
 import { socket } from "./service/socket";
-import { useEffect, useState, SyntheticEvent } from "react";
+import { useEffect, useState, SyntheticEvent, useContext } from "react";
 import ChatScreen from "./components/Chat/ChatScreen";
 import ChatInput from "./components/Chat/ChatInput";
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -8,6 +8,7 @@ import axios from "axios";
 import NoChannelScreen from "./components/NoChannelScreen";
 import { API_BASE_URL } from "./constants";
 import { createMessage, generateTemporaryId } from "./utils/message";
+import { UserContext, UserContextContent } from "./contexts/user";
 
 export type Server = {
   createdAt: string;
@@ -48,11 +49,11 @@ export type User = {
 };
 
 function App() {
+  const {user, setUser} = useContext<UserContextContent>(UserContext);
+
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [pendingList, setPendingList] = useState<Message[]>([]);
-
-  const [user, setUser] = useState<User>({});
 
   const [selectedChannel, setSelectedChannel] = useState<Channel>();
   const [selectedServer, setSelectedServer] = useState<Server>();

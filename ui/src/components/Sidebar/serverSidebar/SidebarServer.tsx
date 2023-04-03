@@ -13,12 +13,14 @@ type Props = {
   serverList: Server[];
   setServerList: Dispatch<React.SetStateAction<Server[]>>;
   handleOnChangeServer: (newServer: Server) => void;
+  selectedServer: Server | undefined;
 };
 
 function SidebarServer({
   serverList,
   setServerList,
   handleOnChangeServer,
+  selectedServer,
 }: Props) {
   const onDragEnd = (result: any) => {
     if (result.destination) {
@@ -39,11 +41,12 @@ function SidebarServer({
               {serverList.map((currentServer, index) => (
                 <Draggable
                   key={currentServer.id}
-                  draggableId={currentServer.id}
+                  draggableId={currentServer.id || index.toString()}
                   index={index}
                 >
                   {(provided, snapshot) => (
                     <ServerButton
+                      isSelected={selectedServer?.id === currentServer.id}
                       handleOnChangeServer={handleOnChangeServer}
                       provided={provided}
                       snapshot={snapshot}
@@ -57,7 +60,10 @@ function SidebarServer({
           )}
         </Droppable>
       </DragDropContext>
-      <CreateServerButton />
+      <CreateServerButton
+        handleOnChangeServer={handleOnChangeServer}
+        setServerList={setServerList}
+      />
     </div>
   );
 }

@@ -6,6 +6,7 @@ type Props = {
   provided: any;
   snapshot: any;
   handleOnChangeServer: (newServer: Server) => void;
+  isSelected: boolean;
 };
 
 function ServerButton({
@@ -13,6 +14,7 @@ function ServerButton({
   provided,
   snapshot,
   handleOnChangeServer,
+  isSelected,
 }: Props) {
   // TODO: if is active, make border white
 
@@ -29,7 +31,7 @@ function ServerButton({
     >
       <motion.div
         whileTap={{ scale: 0.95 }}
-        className={` mb-2 mx-2  justify-centerbg-blue-900 transition-all duration-[50ms] hover:border-[4px] border-gray-800 bg-blue-900 cursor-pointer rounded-[30%] p-5 w-[50px] h-[50px] flex justify-center place-content-center my-auto`}
+        className={` mb-2 mx-2 ${isSelected ? 'bg-green-900 rounded-[10%]' : 'bg-blue-900 rounded-[30%]'} justify-centerbg-blue-900 transition-all duration-[50ms] hover:border-[4px] border-gray-800  cursor-pointer  p-5 w-[50px] h-[50px] flex justify-center place-content-center my-auto`}
         onClick={handleOnClick}
       >
         {serverData.name}

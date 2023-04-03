@@ -33,6 +33,7 @@ const Sidebar: FC<Props> = ({
     <div className="w-full h-full flex flex-row flex-:wgrow bg-gray-800">
       <div className="sidebar-server-container border-r-[1px] border-gray-700">
         <SidebarServer
+          selectedServer={selectedServer}
           serverList={serverList}
           setServerList={setServerList}
           handleOnChangeServer={handleOnChangeServer}

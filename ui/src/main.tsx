@@ -2,6 +2,7 @@ import ReactDOM from "react-dom/client";
 import { MantineProvider } from "@mantine/core";
 import App from "./App";
 import "./index.css";
+import { UserContextProvider } from "./contexts/user";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   // <React.StrictMode>
@@ -12,7 +13,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       theme={{ colorScheme: "dark" }}
       withGlobalStyles
       withNormalizeCSS
-      children={<App />}
+      children={
+        <UserContextProvider>
+          <App />
+        </UserContextProvider>
+      }
     />
   </>
 );

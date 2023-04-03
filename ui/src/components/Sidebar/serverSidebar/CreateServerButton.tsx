@@ -1,15 +1,19 @@
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { ChangeEvent } from "react";
+import { ChangeEvent, Dispatch } from "react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Button } from "@mantine/core";
 import axios from "axios";
 import { API_BASE_URL } from "../../../constants";
+import { Server } from "../../../App";
 
-type Props = {};
+type Props = {
+  handleOnChangeServer: (newServer: Server) => void;
+  setServerList: Dispatch<any>;
+};
 
-function CreateServerButton({}: Props) {
+function CreateServerButton({ handleOnChangeServer, setServerList }: Props) {
   const [opened, { open, close }] = useDisclosure(false);
   const [inputs, setInputs] = useState({
     serverName: "",
@@ -36,13 +40,23 @@ function CreateServerButton({}: Props) {
       );
 
       if (newServer) {
-        console.log(newServer);
+        // append to user list
+        setServerList((prevServers: Server[]) => [
+          ...prevServers,
+          newServer.data,
+        ]);
+
+        // set to user
+        handleOnChangeServer(newServer.data);
+
+        // close modal
+        close();
       }
     } catch (error) {
       console.error(error);
     }
   };
-
+  // TODO: STYLE MODAL
   return (
     <div className="w-[50px] h-[50px] mb-2 mx-2 flex justify-center">
       <motion.div
@@ -50,7 +64,7 @@ function CreateServerButton({}: Props) {
         className={`bg-blue-900 transition-all duration-[50ms] hover:border-[4px] border-gray-800 cursor-pointer rounded-[30%] p-5 w-[50px] h-[50px] flex justify-center place-content-center my-auto`}
         onClick={open}
       >
-        {/* this is a placeholder, replace with good image */}
+        {/* this is a placeholder, replace with quality image */}
         <span className="flex justify-center align-baseline">+</span>
       </motion.div>
       <Modal
