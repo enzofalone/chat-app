@@ -56,6 +56,12 @@ app.use("/auth/", routesAuth);
 app.use("/channel/", routesRooms);
 app.use("/messages/", routesMessages);
 app.use("/server/", routesServer);
+
+// test endpoint
+app.get("/", (req, res, next) => {
+  res.status(200).json({ ping: "pong" });
+});
+
 // generic error handling
 app.use((err, req, res, next) => {
   const status = err.status || 500;

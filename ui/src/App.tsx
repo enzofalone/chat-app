@@ -49,7 +49,7 @@ export type User = {
 };
 
 function App() {
-  const {user, setUser} = useContext<UserContextContent>(UserContext);
+  const { user, setUser } = useContext<UserContextContent>(UserContext);
 
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
@@ -60,7 +60,6 @@ function App() {
 
   const [channelList, setChannelList] = useState<Channel[]>([]);
   const [serverList, setServerList] = useState<Server[]>([]);
-  const [fetchingUser, setFetchingUser] = useState(false);
   const [fetchingServer, setFetchingServer] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
 
@@ -134,30 +133,6 @@ function App() {
 
   const openGoogleSignIn = async () => {
     window.open(`${API_BASE_URL}/auth/google`, "_self");
-  };
-
-  const fetchUser = async () => {
-    setFetchingUser(true);
-
-    try {
-      const config = {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
-      const response = await axios.get(
-        `${API_BASE_URL}/auth/login/success`,
-        config
-      );
-
-      if (response.data) {
-        setUser(response.data.user);
-      }
-    } catch (error) {}
-
-    setFetchingUser(false);
   };
 
   const setToDelivered = () => {
@@ -268,8 +243,6 @@ function App() {
         socket.connect();
       }, 1000);
     });
-
-    fetchUser();
   }, []);
 
   return (
