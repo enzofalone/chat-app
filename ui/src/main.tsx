@@ -3,6 +3,7 @@ import { MantineProvider } from "@mantine/core";
 import App from "./App";
 import "./index.css";
 import { UserContextProvider } from "./contexts/user";
+import { ServerContextProvider } from "./contexts/server";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   // <React.StrictMode>
@@ -15,7 +16,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       withNormalizeCSS
       children={
         <UserContextProvider>
-          <App />
+          <ServerContextProvider>
+            <App />
+          </ServerContextProvider>
         </UserContextProvider>
       }
     />

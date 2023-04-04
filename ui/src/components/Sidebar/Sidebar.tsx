@@ -7,13 +7,13 @@ import SidebarServer from "./serverSidebar/SidebarServer";
 
 type Props = {
   serverList: Server[];
-  setServerList: Dispatch<React.SetStateAction<Server[]>>;
+  setServerList: Dispatch<Server[]>;
   channelList: Channel[];
   setChannelList: Dispatch<Channel[]>;
   selectedServer: Server | undefined;
   selectedChannel: Channel | undefined;
-  setSelectedServer: Dispatch<SetStateAction<Server | undefined>>;
-  setSelectedChannel: Dispatch<SetStateAction<Channel | undefined>>;
+  setSelectedServer: Dispatch<Server>;
+  setSelectedChannel: Dispatch<Channel>;
   handleOnChangeChannel: (newChannel: Channel) => void;
   handleOnChangeServer: (newServer: Server) => void;
 };

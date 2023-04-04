@@ -12,11 +12,13 @@ interface Props {
 export type UserContextContent = {
   user: User;
   setUser: Dispatch<User>;
+  fetchingUser: boolean;
 };
 
 export const UserContext: any = createContext<UserContextContent>({
   user: {},
   setUser: () => {},
+  fetchingUser: false,
 });
 
 export const UserContextProvider: React.FC<Props> = ({ children }: Props) => {

@@ -11,7 +11,7 @@ interface Combine {
 
 type Props = {
   serverList: Server[];
-  setServerList: Dispatch<React.SetStateAction<Server[]>>;
+  setServerList: Dispatch<Server[]>;
   handleOnChangeServer: (newServer: Server) => void;
   selectedServer: Server | undefined;
 };

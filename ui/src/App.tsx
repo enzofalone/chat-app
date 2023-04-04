@@ -9,6 +9,7 @@ import NoChannelScreen from "./components/NoChannelScreen";
 import { API_BASE_URL } from "./constants";
 import { createMessage, generateTemporaryId } from "./utils/message";
 import { UserContext, UserContextContent } from "./contexts/user";
+import { ServerContext, ServerContextContent } from "./contexts/server";
 
 export type Server = {
   createdAt: string;
@@ -50,18 +51,15 @@ export type User = {
 
 function App() {
   const { user, setUser } = useContext<UserContextContent>(UserContext);
+  const { selectedServer, setSelectedServer, fetchingServer, serverList, setServerList} = useContext<ServerContextContent>(ServerContext);
 
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [pendingList, setPendingList] = useState<Message[]>([]);
 
   const [selectedChannel, setSelectedChannel] = useState<Channel>();
-  const [selectedServer, setSelectedServer] = useState<Server>();
-
-  const [channelList, setChannelList] = useState<Channel[]>([]);
-  const [serverList, setServerList] = useState<Server[]>([]);
-  const [fetchingServer, setFetchingServer] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
+  const [channelList, setChannelList] = useState<Channel[]>([]);
 
   const isUserLoggedIn = user._id ? !!user._id.length : false;
   // TODO: MOVE EVERYTHING TO A CONTEXT
@@ -160,31 +158,7 @@ function App() {
     setPendingList([]);
   };
 
-  const fetchServers = async () => {
-    if (user._id) {
-      setFetchingServer(true);
-
-      try {
-        const config = {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        };
-        const receivedServerList = await axios.get(
-          `${API_BASE_URL}/server`,
-          config
-        );
-        console.log(receivedServerList.data);
-        setServerList(receivedServerList.data || []);
-        setSelectedServer(receivedServerList.data[0]);
-      } catch (error) {
-        console.error(error);
-      }
-
-      setFetchingServer(false);
-    }
-  };
+ 
 
   const fetchChannels = async () => {
     if (!selectedServer) return;
@@ -217,9 +191,6 @@ function App() {
     setFetchingChannel(false);
   };
 
-  useEffect(() => {
-    fetchServers();
-  }, [user]);
 
   useEffect(() => {
     fetchChannels();
