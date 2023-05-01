@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { MessageStatus } from "../../App";
 import { convertTimestamp } from "../../utils/convertTimestamp";
+import { MessageStatus } from "../../common/types";
 
 type Props = {
   messageContent: string;

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { SyntheticEvent } from "react";
-import { Server } from "../../../App";
+import { Server } from "../../../common/types";
+
 type Props = {
   serverData: any;
   provided: any;

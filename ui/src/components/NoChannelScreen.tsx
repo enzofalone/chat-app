@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { FC } from "react";
-import { User } from "../App";
 import googleSignInImageSrc from "../assets/btn_google_signin.png";
+import { User } from "../common/types";
 
 type Props = {
   user: User;

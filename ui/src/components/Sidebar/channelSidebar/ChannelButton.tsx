@@ -1,5 +1,5 @@
-import React, { FC, SyntheticEvent } from "react";
-import { Channel } from "../../../App";
+import { FC } from "react";
+import { Channel } from "../../../common/types";
 
 type Props = {
   isSelected: boolean;

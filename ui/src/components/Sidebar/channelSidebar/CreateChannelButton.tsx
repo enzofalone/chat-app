@@ -2,8 +2,8 @@ import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
 import { ChangeEvent, Dispatch, useState } from "react";
-import { Channel } from "../../../App";
 import { API_BASE_URL } from "../../../constants";
+import { Channel } from "../../../common/types";
 
 type Props = {
   serverId: string | undefined;

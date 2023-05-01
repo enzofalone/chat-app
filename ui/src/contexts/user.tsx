@@ -1,6 +1,6 @@
 import { createContext, Dispatch, useEffect, useState } from "react";
-import { User } from "../App";
 import { ApiUser } from "../service/apiUser";
+import { User } from "../common/types";
 
 interface Props {
   children: any;

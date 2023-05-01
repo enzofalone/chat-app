@@ -10,60 +10,22 @@ import { API_BASE_URL } from "./constants";
 import { createMessage, generateTemporaryId } from "./utils/message";
 import { UserContext, UserContextContent } from "./contexts/user";
 import { ServerContext, ServerContextContent } from "./contexts/server";
-
-export type Server = {
-  createdAt: string;
-  id: string;
-  name?: string;
-  channels: Channel[];
-};
-
-export type Message = {
-  createdAt: string;
-  id: string | number | undefined;
-  user?: User;
-  name?: string;
-  text: string;
-  channelId: string | undefined;
-  status?: MessageStatus;
-  success?: boolean;
-};
-
-export enum MessageStatus {
-  PENDING,
-  ERROR,
-  DELIVERED,
-}
-
-export type Channel = {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type User = {
-  _id?: string;
-  username?: string;
-  picture?: string;
-  googleId?: string;
-};
+import { Message, Channel, MessageStatus, Server } from "./common/types";
+import { ChannelContext, ChannelContextContent } from "./contexts/channel";
+import { MessageContext, MessageContextContent } from "./contexts/message";
 
 function App() {
   const { user } = useContext<UserContextContent>(UserContext);
   const { selectedServer, setSelectedServer, serverList, setServerList } =
     useContext<ServerContextContent>(ServerContext);
+  const { selectedChannel, setSelectedChannel, setChannelList, channelList, handleOnChangeChannel} =
+    useContext<ChannelContextContent>(ChannelContext);
+  const { addMessage, isDeliveredCallback, setMessageList, messageList } =
+    useContext<MessageContextContent>(MessageContext);
 
-  const [messageList, setMessageList] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [pendingList, setPendingList] = useState<Message[]>([]);
-
-  const [selectedChannel, setSelectedChannel] = useState<Channel>();
-  const [fetchingChannel, setFetchingChannel] = useState(false);
-  const [channelList, setChannelList] = useState<Channel[]>([]);
 
   const isUserLoggedIn = user._id ? !!user._id.length : false;
-  // TODO: MOVE EVERYTHING TO A CONTEXT
 
   const handleOnSend = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -91,32 +53,6 @@ function App() {
     setInputValue("");
   };
 
-  const isDeliveredCallback = (
-    id: string,
-    messageData: Message,
-    success: boolean
-  ) => {
-    setPendingList((prevList) => [
-      ...prevList,
-      { ...messageData, id, success },
-    ]);
-  };
-
-  const handleOnChangeChannel = (newChannel: Channel) => {
-    setMessageList([]);
-
-    socket.emit(
-      "join-channel",
-      { prevChannel: selectedChannel, newChannel, user: user },
-      (messages: Message[]) => {
-        // get message list from callback
-        setMessageList(messages);
-      }
-    );
-
-    setSelectedChannel(newChannel);
-  };
-
   const handleOnChangeServer = (newServer: Server) => {
     setMessageList([]);
     setChannelList([]);
@@ -124,83 +60,14 @@ function App() {
     setSelectedServer(newServer);
   };
 
-  const addMessage = (message: Message) => {
-    setMessageList((prevList) => {
-      return [...prevList, message];
-    });
-  };
-
   const openGoogleSignIn = async () => {
     window.open(`${API_BASE_URL}/auth/google`, "_self");
   };
 
-  const setToDelivered = () => {
-    // get all the ID's received by send-message callbacks and set messages to delivered status
-    const pendingListCopy = pendingList;
-
-    while (pendingListCopy.length) {
-      const pendingMessage = pendingListCopy.pop();
-
-      if (pendingMessage) {
-        const messageIndex = messageList.findIndex(
-          (mess) => mess.id === pendingMessage.id
-        );
-
-        const status = pendingMessage.success
-          ? MessageStatus.DELIVERED
-          : MessageStatus.ERROR;
-
-        setMessageList((list) => {
-          list[messageIndex].status = status;
-          return list;
-        });
-      }
-    }
-    setPendingList([]);
-  };
-
-  const fetchChannels = async () => {
-    if (!selectedServer) return;
-    // todo parse user keys to whatever we need
-    if (!user._id) return;
-
-    setFetchingChannel(true);
-
-    try {
-      const config = {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const receivedChannelList = await axios.get(
-        `${API_BASE_URL}/channel/?serverId=${selectedServer?.id}`,
-        config
-      );
-      console.log(receivedChannelList.data);
-      setChannelList(receivedChannelList.data || []);
-
-      if (receivedChannelList.data.length) {
-        handleOnChangeChannel(receivedChannelList.data[0]);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-
-    setFetchingChannel(false);
-  };
-
   useEffect(() => {
-    fetchChannels();
-  }, [serverList, selectedServer]);
-
-  useEffect(() => {
-    if (pendingList.length) {
-      setToDelivered();
-    }
-  }, [pendingList]);
-
-  useEffect(() => {
+    /**
+     * Socket events
+     */
     socket.on("connect", () => {});
 
     socket.on("receive-message", (message: Message) => {

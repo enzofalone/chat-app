@@ -1,8 +1,8 @@
-import React, { Dispatch, FC, SetStateAction } from "react";
-import { Channel, Server } from "../../App";
+import { Dispatch, FC, } from "react";
 import SidebarChannel from "./channelSidebar/SidebarChannel";
 import SidebarServerTitle from "./channelSidebar/SidebarServerTitle";
 import SidebarServer from "./serverSidebar/SidebarServer";
+import { Server, Channel } from "../../common/types";
 1;
 
 type Props = {

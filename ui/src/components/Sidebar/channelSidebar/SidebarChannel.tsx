@@ -1,8 +1,8 @@
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import CreateChannelButton from "./CreateChannelButton";
 import SidebarChannelButton from "./ChannelButton";
-import { Channel } from "../../../App";
 import { Dispatch } from "react";
+import { Channel } from "../../../common/types";
 
 type Props = {
   serverId: string | undefined;

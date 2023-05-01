@@ -6,9 +6,9 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Server } from "../App";
 import { API_BASE_URL } from "../constants";
 import { UserContext, UserContextContent } from "./user";
+import { Server } from "../common/types";
 
 interface Props {
   children: any;
