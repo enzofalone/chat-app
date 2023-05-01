@@ -61,11 +61,27 @@ function CreateServerButton({ handleOnChangeServer, setServerList }: Props) {
     <div className="w-[50px] h-[50px] mb-2 mx-2 flex justify-center">
       <motion.div
         whileTap={{ scale: 0.95 }}
-        className={`bg-blue-900 transition-all duration-[50ms] hover:border-[4px] border-gray-800 cursor-pointer rounded-[30%] p-5 w-[50px] h-[50px] flex justify-center place-content-center my-auto`}
+        whileHover={{scale: 1.05}}
+        className={`bg-blue-900 transition-all duration-[50ms] hover:border-[4px] border-gray-800 cursor-pointer rounded-[30%]  w-[50px] h-[50px] flex justify-center place-content-center my-auto`}
         onClick={open}
       >
         {/* this is a placeholder, replace with quality image */}
-        <span className="flex justify-center align-baseline">+</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="icon icon-tabler icon-tabler-plus w-full h-full p-3"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M12 5l0 14"></path>
+          <path d="M5 12l14 0"></path>
+        </svg>
       </motion.div>
       <Modal
         opened={opened}

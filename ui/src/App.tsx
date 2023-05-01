@@ -10,6 +10,8 @@ import { API_BASE_URL } from "./constants";
 import { createMessage, generateTemporaryId } from "./utils/message";
 import { UserContext, UserContextContent } from "./contexts/user";
 import { ServerContext, ServerContextContent } from "./contexts/server";
+import SidebarServerTitle from "./components/Sidebar/channelSidebar/SidebarServerTitle";
+import SidebarChannel from "./components/Sidebar/channelSidebar/SidebarChannel";
 
 export type Server = {
   createdAt: string;
@@ -51,7 +53,13 @@ export type User = {
 
 function App() {
   const { user, setUser } = useContext<UserContextContent>(UserContext);
-  const { selectedServer, setSelectedServer, fetchingServer, serverList, setServerList} = useContext<ServerContextContent>(ServerContext);
+  const {
+    selectedServer,
+    setSelectedServer,
+    fetchingServer,
+    serverList,
+    setServerList,
+  } = useContext<ServerContextContent>(ServerContext);
 
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
@@ -158,8 +166,6 @@ function App() {
     setPendingList([]);
   };
 
- 
-
   const fetchChannels = async () => {
     if (!selectedServer) return;
     // todo parse user keys to whatever we need
@@ -190,7 +196,6 @@ function App() {
 
     setFetchingChannel(false);
   };
-
 
   useEffect(() => {
     fetchChannels();

@@ -58,11 +58,13 @@ const SidebarChannel = ({
           )}
         </Droppable>
       </DragDropContext>
+      {channelList.length ? 
       <CreateChannelButton
         serverId={serverId}
         handleOnChangeChannel={handleOnChangeChannel}
         setChannelList={setChannelList}
-      />
+      /> : <>
+      </>}
     </div>
   );
 };
