@@ -1,6 +1,6 @@
 const ServerModel = require("../model/server");
 const { BadRequestError } = require("../utils/errors");
-
+const Channel = require("../controllers/channel");
 class Server {
   static makePublicServer(server) {
     const { _id, name, ownerId, updatedAt, createdAt, users, channels } =
@@ -23,6 +23,10 @@ class Server {
 
     try {
       const newServer = await server.save(serverData);
+
+      // create default "general" channel
+      await Channel.create(newServer._id, "general");
+      console.log(newServer)
       return { data: this.makePublicServer(newServer) };
     } catch (error) {
       console.error(error.message);
