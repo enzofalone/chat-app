@@ -10,8 +10,6 @@ import { API_BASE_URL } from "./constants";
 import { createMessage, generateTemporaryId } from "./utils/message";
 import { UserContext, UserContextContent } from "./contexts/user";
 import { ServerContext, ServerContextContent } from "./contexts/server";
-import SidebarServerTitle from "./components/Sidebar/channelSidebar/SidebarServerTitle";
-import SidebarChannel from "./components/Sidebar/channelSidebar/SidebarChannel";
 
 export type Server = {
   createdAt: string;
@@ -52,14 +50,9 @@ export type User = {
 };
 
 function App() {
-  const { user, setUser } = useContext<UserContextContent>(UserContext);
-  const {
-    selectedServer,
-    setSelectedServer,
-    fetchingServer,
-    serverList,
-    setServerList,
-  } = useContext<ServerContextContent>(ServerContext);
+  const { user } = useContext<UserContextContent>(UserContext);
+  const { selectedServer, setSelectedServer, serverList, setServerList } =
+    useContext<ServerContextContent>(ServerContext);
 
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
@@ -76,10 +69,10 @@ function App() {
     e.preventDefault();
 
     // TODO: Create toasts
-    if (!inputValue.length) return;
-    if (!user) return;
-    if (!selectedChannel) return;
-    if (!isUserLoggedIn) return;
+    if (!inputValue.length || !user || !selectedChannel || !isUserLoggedIn) {
+      console.error("Error sending message!");
+      return;
+    }
 
     const newMessage = createMessage(
       generateTemporaryId(),

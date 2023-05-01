@@ -1,16 +1,13 @@
 import axios from "axios";
 import {
-  Context,
   createContext,
   Dispatch,
   useContext,
   useEffect,
   useState,
 } from "react";
-import { Server, User } from "../App";
+import { Server } from "../App";
 import { API_BASE_URL } from "../constants";
-import { ApiClient, Method } from "../service/apiClient";
-import { ApiUser } from "../service/apiUser";
 import { UserContext, UserContextContent } from "./user";
 
 interface Props {
@@ -55,7 +52,7 @@ export const ServerContextProvider: React.FC<Props> = ({ children }: Props) => {
           `${API_BASE_URL}/server`,
           config
         );
-        console.log(receivedServerList.data);
+
         setServerList(receivedServerList.data || []);
         setSelectedServer(receivedServerList.data[0]);
       } catch (error) {

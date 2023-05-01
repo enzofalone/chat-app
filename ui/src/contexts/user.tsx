@@ -1,8 +1,5 @@
-import axios from "axios";
-import { Context, createContext, Dispatch, useEffect, useState } from "react";
+import { createContext, Dispatch, useEffect, useState } from "react";
 import { User } from "../App";
-import { API_BASE_URL } from "../constants";
-import { ApiClient, Method } from "../service/apiClient";
 import { ApiUser } from "../service/apiUser";
 
 interface Props {

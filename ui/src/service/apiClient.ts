@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { API_BASE_URL } from "../constants";
 
 export enum Method {
@@ -40,7 +40,7 @@ export class ApiClient {
         headers,
         url,
         method: "GET",
-        withCredentials: true
+        withCredentials: true,
       });
 
       return { data: res.data, error: null };
