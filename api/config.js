@@ -20,9 +20,6 @@ const CLIENT_URL =
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
-const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-
 function getDatabaseUri() {
   const dbHost = process.env.DATABASE_HOST || "127.0.0.1";
   const dbPort = process.env.DATABASE_PORT || "27017";
@@ -43,7 +40,5 @@ module.exports = {
   CLIENT_URL,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
-  GITHUB_CLIENT_ID,
-  GITHUB_CLIENT_SECRET,
   getDatabaseUri,
 };

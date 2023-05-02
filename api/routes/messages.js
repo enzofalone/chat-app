@@ -2,6 +2,9 @@ const express = require("express");
 const Message = require("../controllers/message");
 const router = express.Router();
 
+/**
+ * Create message based on JSON object containing: name, text, channelId
+ */
 router.post("/", async (req, res) => {
   const { name, text, channelId } = req.body;
 
@@ -14,6 +17,9 @@ router.post("/", async (req, res) => {
   }
 });
 
+/**
+ * Get by channel ID
+ */
 router.get("/:channelId", async (req, res) => {
   const { channelId } = req.params;
 
@@ -26,6 +32,9 @@ router.get("/:channelId", async (req, res) => {
   }
 });
 
+/**
+ * delete by message ID
+ */
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
 

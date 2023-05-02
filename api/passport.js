@@ -2,13 +2,11 @@ const passport = require("passport");
 const {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
-  GITHUB_CLIENT_ID,
-  GITHUB_CLIENT_SECRET,
 } = require("./config");
 const User = require("./controllers/user");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const GitHubStrategy = require("passport-github2").Strategy;
-// set up Passport
+
+// set up Passport for Google OAuth 2.0
 passport.use(
   new GoogleStrategy(
     {
@@ -38,6 +36,9 @@ passport.serializeUser((providerData, done) => {
   done(null, providerData);
 });
 
+/**
+ * Here we get all the data of the provider (in this case only Google OAuth 2.0)
+ */
 passport.deserializeUser(async (providerData, done) => {
   try {
     if (providerData.provider === "google") {
