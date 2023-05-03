@@ -7,18 +7,19 @@ router.post("/", async (req, res) => {
   const { serverName } = req.body;
   const { _id } = req.user;
   console.log("serverName", serverName);
-  try{
-  if (!_id || !serverName) {
-    throw new BadRequestError("No user id/server name found");
-  }
+  try {
+    if (!_id || !serverName) {
+      throw new BadRequestError("No user id/server name found");
+    }
 
-  const newServer = await Server.create(serverName, _id);
+    const newServer = await Server.create(serverName, _id);
 
-  if (newServer.data) {
-    res.status(201).json(newServer.data);
-  } else {
-    res.status(400).json(newServer.error);
-  }} catch(error) {
+    if (newServer.data) {
+      res.status(201).json(newServer.data);
+    } else {
+      res.status(400).json(newServer.error);
+    }
+  } catch (error) {
     console.error(error);
   }
 });
