@@ -1,6 +1,7 @@
 require("dotenv").config();
 require("colors");
 
+// TODO: move all .env variables imported here and log if it is empty
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 const SOCKET_PORT = process.env.SOCKET_PORT
   ? Number(process.env.SOCKET_PORT)

@@ -61,7 +61,7 @@ class Message {
     }
   }
 
-  static async findByChannel(channelId, page) {
+  static async findByChannel(channelId, page = 0) {
     const filter = { channelId };
     const perPage = 25;
     const skip = perPage * (page - 1);
@@ -71,7 +71,6 @@ class Message {
     try {
       // fetch messages, sort by chronological order
       const messages = await MessageModel.find(filter).sort({ createdAt: 1 });
-
       // parse JSON to JavaScript objects
       messages.forEach((message, index) => {
         parsedMessages.push(parseMessage(message));

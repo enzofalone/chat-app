@@ -22,7 +22,6 @@ router.post("/", async (req, res) => {
  */
 router.get("/:channelId", async (req, res) => {
   const { channelId } = req.params;
-
   const messages = await Message.findByChannel(channelId);
 
   if (messages.data) {
