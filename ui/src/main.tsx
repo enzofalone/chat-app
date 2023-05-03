@@ -19,11 +19,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       children={
         <UserContextProvider>
           <ServerContextProvider>
-            <MessageContextProvider>
-              <ChannelContextProvider>
+            <ChannelContextProvider>
+              <MessageContextProvider>
                 <App />
-              </ChannelContextProvider>
-            </MessageContextProvider>
+              </MessageContextProvider>
+            </ChannelContextProvider>
           </ServerContextProvider>
         </UserContextProvider>
       }

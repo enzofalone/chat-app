@@ -6,7 +6,7 @@ type Props = {
   serverData: any;
   provided: any;
   snapshot: any;
-  handleOnChangeServer: (newServer: Server) => void;
+  handleOnChangeServer: Function;
   isSelected: boolean;
 };
 
@@ -43,7 +43,7 @@ function ServerButton({
           className="text-center h-fit place-self-center
         "
         >
-          {serverData.name[0]}
+          {serverData?.name[0] ? serverData?.name[0] : ''}
         </span>
       </motion.div>
     </div>

@@ -3,7 +3,7 @@ import { Channel } from "../../../common/types";
 
 type Props = {
   isSelected: boolean;
-  handleOnChangeChannel: (newChannel: Channel) => void;
+  handleOnChangeChannel: Function;
   channelData: any;
   provided: any;
   snapshot: any;

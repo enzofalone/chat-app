@@ -1,4 +1,8 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, {
+  AxiosRequestConfig,
+  AxiosRequestHeaders,
+  AxiosResponse,
+} from "axios";
 import { API_BASE_URL } from "../constants";
 
 export enum Method {
@@ -27,7 +31,8 @@ export class ApiClient {
 
     const headers = {
       Accept: "application/json",
-    };
+      "Access-Control-Allow-Origin": API_BASE_URL,
+    } as any as AxiosRequestHeaders;
 
     const config: AxiosRequestConfig = {
       headers,
@@ -39,8 +44,9 @@ export class ApiClient {
       const res: AxiosResponse = await axios({
         headers,
         url,
-        method: "GET",
+        method,
         withCredentials: true,
+        data
       });
 
       return { data: res.data, error: null };

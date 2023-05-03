@@ -7,6 +7,6 @@ export class ApiUser extends ApiClient {
     }
 
     async getUser() {
-        return await this.request({endpoint: '/auth/login/success', method: Method.GET});  
+        return await this.request({endpoint: '/auth/login/', method: Method.GET});  
     }
 }

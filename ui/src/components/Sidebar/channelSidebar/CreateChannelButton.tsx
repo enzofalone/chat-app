@@ -7,7 +7,7 @@ import { Channel } from "../../../common/types";
 
 type Props = {
   serverId: string | undefined;
-  handleOnChangeChannel: (newChannel: Channel) => void;
+  handleOnChangeChannel: Function;
   setChannelList: Dispatch<any>; // TODO: remove any
 };
 
@@ -55,7 +55,6 @@ function CreateChannelButton({
     } catch (error) {
       console.error(error);
     }
-
   };
 
   return (

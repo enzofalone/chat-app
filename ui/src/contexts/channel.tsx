@@ -23,8 +23,8 @@ export type ChannelContextContent = {
   fetchingChannel: boolean;
   setSelectedChannel: Dispatch<Channel>;
   selectedChannel: Channel | undefined;
-  addMessage: Function;
   handleOnChangeChannel: Function;
+  messagesFromChannel: Message[];
 };
 
 export const ChannelContext: any = createContext<ChannelContextContent>({
@@ -33,8 +33,8 @@ export const ChannelContext: any = createContext<ChannelContextContent>({
   fetchingChannel: false,
   setSelectedChannel: () => {},
   selectedChannel: undefined,
-  addMessage: () => {},
   handleOnChangeChannel: () => {},
+  messagesFromChannel: [],
 });
 
 export const ChannelContextProvider: React.FC<Props> = ({
@@ -43,18 +43,21 @@ export const ChannelContextProvider: React.FC<Props> = ({
   const [selectedChannel, setSelectedChannel] = useState<Channel>();
   const [fetchingChannel, setFetchingChannel] = useState(false);
   const [channelList, setChannelList] = useState<Channel[]>([]);
+  const [messagesFromChannel, setMessagesFromChannel] = useState<Message[]>([]);
 
   // context imports
-  const { setMessageList, messageList } =
-    useContext<MessageContextContent>(MessageContext);
   const { user } = useContext<UserContextContent>(UserContext);
   const { selectedServer, serverList } =
     useContext<ServerContextContent>(ServerContext);
 
   const fetchChannels = async () => {
     if (!selectedServer) return;
-    // todo parse user keys to whatever we need
+
+    // TODO: parse user keys to whatever we need
     if (!user._id) return;
+
+    // clean
+    setChannelList([]);
 
     setFetchingChannel(true);
 
@@ -81,29 +84,27 @@ export const ChannelContextProvider: React.FC<Props> = ({
     setFetchingChannel(false);
   };
 
+  /**
+   * callback Event for channel buttons / every time we change servers to fetch all channels and perform a cleanup
+   */
   const handleOnChangeChannel = (newChannel: Channel) => {
-    setMessageList([]);
-
     socket.emit(
       "join-channel",
       { prevChannel: selectedChannel, newChannel, user: user },
       (messages: Message[]) => {
         // get message list from callback
-        setMessageList(messages);
+        setMessagesFromChannel(messages);
       }
     );
 
     setSelectedChannel(newChannel);
   };
-  const addMessage = (message: Message) => {
-    const newList = [...messageList, message];
-
-    setMessageList(newList);
-  };
 
   useEffect(() => {
-    fetchChannels();
-  }, [serverList, selectedServer]);
+    if (user) {
+      fetchChannels();
+    }
+  }, [selectedServer]);
 
   const contextValues: ChannelContextContent = {
     channelList,
@@ -111,8 +112,8 @@ export const ChannelContextProvider: React.FC<Props> = ({
     fetchingChannel,
     setSelectedChannel,
     selectedChannel,
-    addMessage,
-    handleOnChangeChannel
+    handleOnChangeChannel,
+    messagesFromChannel,
   };
 
   return (

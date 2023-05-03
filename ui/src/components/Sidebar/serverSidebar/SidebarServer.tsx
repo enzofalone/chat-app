@@ -1,27 +1,20 @@
-import { Dispatch } from "react";
-import { Server } from "../../../App";
 import ServerButton from "./ServerButton";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import CreateServerButton from "./CreateServerButton";
+import { useContext } from "react";
+import { ServerContext, ServerContextContent } from "../../../contexts/server";
 
 interface Combine {
   draggableId: string;
   droppableId: string;
 }
 
-type Props = {
-  serverList: Server[];
-  setServerList: Dispatch<Server[]>;
-  handleOnChangeServer: (newServer: Server) => void;
-  selectedServer: Server | undefined;
-};
+type Props = {};
 
-function SidebarServer({
-  serverList,
-  setServerList,
-  handleOnChangeServer,
-  selectedServer,
-}: Props) {
+function SidebarServer({}: Props) {
+  const { serverList, setServerList, selectedServer, handleOnChangeServer } =
+    useContext<ServerContextContent>(ServerContext);
+
   const onDragEnd = (result: any) => {
     if (result.destination) {
       const newItems = [...serverList];
@@ -60,10 +53,7 @@ function SidebarServer({
           )}
         </Droppable>
       </DragDropContext>
-      <CreateServerButton
-        handleOnChangeServer={handleOnChangeServer}
-        setServerList={setServerList}
-      />
+      <CreateServerButton />
     </div>
   );
 }

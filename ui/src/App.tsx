@@ -16,11 +16,8 @@ import { MessageContext, MessageContextContent } from "./contexts/message";
 
 function App() {
   const { user } = useContext<UserContextContent>(UserContext);
-  const { selectedServer, setSelectedServer, serverList, setServerList } =
-    useContext<ServerContextContent>(ServerContext);
-  const { selectedChannel, setSelectedChannel, setChannelList, channelList, handleOnChangeChannel} =
-    useContext<ChannelContextContent>(ChannelContext);
-  const { addMessage, isDeliveredCallback, setMessageList, messageList } =
+  const { selectedChannel } = useContext<ChannelContextContent>(ChannelContext);
+  const { addMessage, isDeliveredCallback, messageList } =
     useContext<MessageContextContent>(MessageContext);
 
   const [inputValue, setInputValue] = useState<string>("");
@@ -53,13 +50,6 @@ function App() {
     setInputValue("");
   };
 
-  const handleOnChangeServer = (newServer: Server) => {
-    setMessageList([]);
-    setChannelList([]);
-
-    setSelectedServer(newServer);
-  };
-
   const openGoogleSignIn = async () => {
     window.open(`${API_BASE_URL}/auth/google`, "_self");
   };
@@ -87,18 +77,7 @@ function App() {
     <div className="App bg-[#1c1c24] flex flex-row w-[100vw] h-[100vh]">
       {/* SIDEBAR */}
       <div className={"w-[20vw] h-screen"}>
-        <Sidebar
-          serverList={serverList}
-          setServerList={setServerList}
-          channelList={channelList}
-          setChannelList={setChannelList}
-          handleOnChangeChannel={handleOnChangeChannel}
-          selectedChannel={selectedChannel}
-          selectedServer={selectedServer}
-          setSelectedServer={setSelectedServer}
-          setSelectedChannel={setSelectedChannel}
-          handleOnChangeServer={handleOnChangeServer}
-        />
+        <Sidebar />
       </div>
       {/* MAIN APP COMPONENTS */}
       <div className="flex-grow flex flex-col">
