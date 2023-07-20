@@ -25,6 +25,8 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
+  if(!req.user?._id) return;
+
   try {
     const serverList = await Server.getByUser(req.user._id);
 
