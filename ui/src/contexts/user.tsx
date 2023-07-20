@@ -13,12 +13,14 @@ export type UserContextContent = {
   user: User;
   setUser: Dispatch<User>;
   fetchingUser: boolean;
+  logOutUser: () => void;
 };
 
 export const UserContext: any = createContext<UserContextContent>({
   user: {},
   setUser: () => {},
   fetchingUser: false,
+  logOutUser: () => {},
 });
 
 export const UserContextProvider: React.FC<Props> = ({ children }: Props) => {
@@ -41,11 +43,20 @@ export const UserContextProvider: React.FC<Props> = ({ children }: Props) => {
     setFetchingUser(false);
   };
 
+  const logOutUser = async () => {
+    setFetchingUser(true);
+
+    const response = await apiUser.logOutUser();
+    window.location.reload();
+
+    setFetchingUser(false);
+  };
+
   useEffect(() => {
     fetchUser();
   }, []);
 
-  const contextValues = { user, setUser, fetchingUser };
+  const contextValues = { user, setUser, fetchingUser, logOutUser };
 
   return (
     <UserContext.Provider value={contextValues}>

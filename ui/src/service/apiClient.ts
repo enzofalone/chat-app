@@ -25,7 +25,7 @@ export class ApiClient {
 
     const url = API_BASE_URL + endpoint;
 
-    const headers = {
+    const headers: any = {
       Accept: "application/json",
     };
 
@@ -39,13 +39,13 @@ export class ApiClient {
       const res: AxiosResponse = await axios({
         headers,
         url,
-        method: "GET",
+        method,
         withCredentials: true
       });
 
       return { data: res.data, error: null };
     } catch (err: any) {
-      console.error({ errorResponse: err.response });
+      console.error({ endpoint, method, errorResponse: err.response });
       const message = err?.response?.data?.error?.message;
       return { data: null, error: message || String(err) };
     }

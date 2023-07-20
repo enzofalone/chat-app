@@ -3,14 +3,13 @@ import { useEffect, useState, SyntheticEvent, useContext } from "react";
 import ChatScreen from "./components/Chat/ChatScreen";
 import ChatInput from "./components/Chat/ChatInput";
 import Sidebar from "./components/Sidebar/Sidebar";
-import ChatHeader from "./components/Chat/ChatHeader";
 import axios from "axios";
 import NoChannelScreen from "./components/NoChannelScreen";
 import { API_BASE_URL } from "./constants";
 import { createMessage, generateTemporaryId } from "./utils/message";
 import { UserContext, UserContextContent } from "./contexts/user";
 import { ServerContext, ServerContextContent } from "./contexts/server";
-
+import ChatHeader from "./components/Chat/ChatHeader/ChatHeader";
 export type Server = {
   createdAt: string;
   id: string;
