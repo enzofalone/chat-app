@@ -1,17 +1,14 @@
-import axios from "axios";
 import {
-  Context,
   createContext,
   Dispatch,
   useContext,
   useEffect,
   useState,
 } from "react";
-import { Server, User } from "../App";
 import { API_BASE_URL } from "../constants";
-import { ApiClient, Method } from "../service/apiClient";
-import { ApiUser } from "../service/apiUser";
 import { UserContext, UserContextContent } from "./user";
+import { Server } from "../common/types";
+import { ApiServer } from "../service/apiServer";
 
 interface Props {
   children: any;
@@ -23,6 +20,8 @@ export type ServerContextContent = {
   fetchingServer: boolean;
   setSelectedServer: Dispatch<Server>;
   selectedServer: Server | undefined;
+  handleOnChangeServer: Function;
+  createServer: Function;
 };
 
 export const ServerContext: any = createContext<ServerContextContent>({
@@ -31,7 +30,11 @@ export const ServerContext: any = createContext<ServerContextContent>({
   fetchingServer: false,
   setSelectedServer: () => {},
   selectedServer: undefined,
+  handleOnChangeServer: () => {},
+  createServer: Function,
 });
+
+const apiServer = new ApiServer(API_BASE_URL);
 
 export const ServerContextProvider: React.FC<Props> = ({ children }: Props) => {
   const [serverList, setServerList] = useState<Server[]>([]);
@@ -45,20 +48,11 @@ export const ServerContextProvider: React.FC<Props> = ({ children }: Props) => {
       setFetchingServer(true);
 
       try {
-        const config = {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        };
-        const receivedServerList = await axios.get(
-          `${API_BASE_URL}/server`,
-          config
-        );
-        console.log(receivedServerList.data);
+        const receivedServerList = await apiServer.getAll();
+
         setServerList(receivedServerList.data || []);
         setSelectedServer(receivedServerList.data[0]);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(error);
       }
 
@@ -66,8 +60,35 @@ export const ServerContextProvider: React.FC<Props> = ({ children }: Props) => {
     }
   };
 
+  const createServer = async (serverName: string) => {
+    try {
+      const newServer = await apiServer.create(serverName);
+
+      if (newServer) {
+        // append to user list
+        setServerList((prevServers: Server[]) => [
+          ...prevServers,
+          newServer.data,
+        ]);
+
+
+        // TODO: change to a success/error message more descriptive
+        return { success: true };
+      }
+    } catch (error: unknown) {
+      console.error(error);
+    }
+    return { success: false };
+  };
+
+  const handleOnChangeServer = (newServer: Server) => {
+    setSelectedServer(newServer);
+  };
+
   useEffect(() => {
-    fetchServers();
+    if (user._id) {
+      fetchServers();
+    }
   }, [user]);
 
   const contextValues: ServerContextContent = {
@@ -76,6 +97,8 @@ export const ServerContextProvider: React.FC<Props> = ({ children }: Props) => {
     fetchingServer,
     serverList,
     setServerList,
+    handleOnChangeServer,
+    createServer,
   };
 
   return (

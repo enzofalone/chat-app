@@ -1,17 +1,26 @@
 const express = require("express");
 const router = express.Router();
 const Server = require("../controllers/server");
+const { BadRequestError } = require("../utils/errors");
 
 router.post("/", async (req, res) => {
   const { serverName } = req.body;
   const { _id } = req.user;
+  console.log("serverName", serverName);
+  try {
+    if (!_id || !serverName) {
+      throw new BadRequestError("No user id/server name found");
+    }
 
-  const newServer = await Server.create(serverName, _id);
+    const newServer = await Server.create(serverName, _id);
 
-  if (newServer.data) {
-    res.status(201).json(newServer.data);
-  } else {
-    res.status(400).json(newServer.error);
+    if (newServer.data) {
+      res.status(201).json(newServer.data);
+    } else {
+      res.status(400).json(newServer.error);
+    }
+  } catch (error) {
+    console.error(error);
   }
 });
 
@@ -26,7 +35,6 @@ router.get("/", async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    return error;
   }
 });
 

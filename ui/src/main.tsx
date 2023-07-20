@@ -4,6 +4,8 @@ import App from "./App";
 import "./index.css";
 import { UserContextProvider } from "./contexts/user";
 import { ServerContextProvider } from "./contexts/server";
+import { ChannelContextProvider } from "./contexts/channel";
+import { MessageContextProvider } from "./contexts/message";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   // <React.StrictMode>
@@ -17,7 +19,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       children={
         <UserContextProvider>
           <ServerContextProvider>
-            <App />
+            <ChannelContextProvider>
+              <MessageContextProvider>
+                <App />
+              </MessageContextProvider>
+            </ChannelContextProvider>
           </ServerContextProvider>
         </UserContextProvider>
       }

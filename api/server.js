@@ -1,7 +1,7 @@
 require("colors");
 require("./passport");
 
-const { UI_PORT, PORT } = require("./config");
+const { UI_PORT, PORT, CLIENT_URL } = require("./config");
 const app = require("express")();
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -29,7 +29,7 @@ app.use(bodyParser.json());
 // cors
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: CLIENT_URL,
     methods: "GET,POST,PUT,DELETE",
     credentials: true,
   })

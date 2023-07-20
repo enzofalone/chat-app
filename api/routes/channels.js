@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Channel = require("../controllers/channel");
 
+/**
+ * create channel with JSON object from client containing server ID, channel name
+ */
 router.post("/", async (req, res, next) => {
   const { serverId, channelName } = req.body;
 
@@ -19,6 +22,9 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+/**
+ * get channels based on user session
+ */
 router.get("/", async (req, res, next) => {
   const { serverId } = req.query;
 

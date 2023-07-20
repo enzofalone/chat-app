@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { FC } from "react";
-import { User } from "../App";
 import googleSignInImageSrc from "../assets/btn_google_signin.png";
+import { User } from "../common/types";
 
 type Props = {
   user: User;
@@ -18,8 +18,8 @@ const NoChannelScreen: FC<Props> = ({
     <div className="w-full h-full flex flex-col justify-center place-items-center">
       <span className="text-4xl text-center">
         {!isUsernameDone
-          ? `Welcome! Please sign in with google and select a room to begin chatting! 🕺`
-          : `Welcome ${user?.username}, please select a room to begin chatting!`}
+          ? `Welcome! Please sign in with google and select a channel to begin chatting! 🕺`
+          : `Welcome ${user?.username}, please create a server or join one to begin chatting!`}
       </span>
       <div className="mt-10">
         {/* google sign in */}

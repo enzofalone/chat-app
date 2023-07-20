@@ -1,9 +1,6 @@
-import axios from "axios";
-import { Context, createContext, Dispatch, useEffect, useState } from "react";
-import { User } from "../App";
-import { API_BASE_URL } from "../constants";
-import { ApiClient, Method } from "../service/apiClient";
+import { createContext, Dispatch, useEffect, useState } from "react";
 import { ApiUser } from "../service/apiUser";
+import { User } from "../common/types";
 
 interface Props {
   children: any;

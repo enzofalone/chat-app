@@ -1,8 +1,8 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
-import { Message } from "../../App";
 import ChatMessage from "./ChatMessage";
+import { Message } from "../../common/types";
 
 type Props = {
   messageList: Message[];

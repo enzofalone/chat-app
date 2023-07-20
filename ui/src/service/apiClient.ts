@@ -1,4 +1,8 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, {
+  AxiosRequestConfig,
+  AxiosRequestHeaders,
+  AxiosResponse,
+} from "axios";
 import { API_BASE_URL } from "../constants";
 
 export enum Method {
@@ -27,7 +31,8 @@ export class ApiClient {
 
     const headers: any = {
       Accept: "application/json",
-    };
+      "Access-Control-Allow-Origin": API_BASE_URL,
+    } as any as AxiosRequestHeaders;
 
     const config: AxiosRequestConfig = {
       headers,

@@ -1,5 +1,5 @@
-import { MessageStatus, Message, User } from "../App";
 import { v4 as uuidv4 } from "uuid";
+import { User, MessageStatus, Message } from "../common/types";
 
 export const generateTemporaryId = (): string => {
   return uuidv4();

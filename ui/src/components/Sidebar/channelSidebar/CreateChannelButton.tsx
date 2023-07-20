@@ -2,12 +2,12 @@ import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
 import { ChangeEvent, Dispatch, useState } from "react";
-import { Channel } from "../../../App";
 import { API_BASE_URL } from "../../../constants";
+import { Channel } from "../../../common/types";
 
 type Props = {
   serverId: string | undefined;
-  handleOnChangeChannel: (newChannel: Channel) => void;
+  handleOnChangeChannel: Function;
   setChannelList: Dispatch<any>; // TODO: remove any
 };
 
@@ -55,7 +55,6 @@ function CreateChannelButton({
     } catch (error) {
       console.error(error);
     }
-
   };
 
   return (

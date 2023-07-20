@@ -1,24 +1,24 @@
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import CreateChannelButton from "./CreateChannelButton";
 import SidebarChannelButton from "./ChannelButton";
-import { Channel } from "../../../App";
-import { Dispatch } from "react";
+import { useContext } from "react";
+import {
+  ChannelContext,
+  ChannelContextContent,
+} from "../../../contexts/channel";
+import { ServerContext, ServerContextContent } from "../../../contexts/server";
 
-type Props = {
-  serverId: string | undefined;
-  selectedChannel: Channel | undefined;
-  channelList: Channel[];
-  setChannelList: Dispatch<Channel[]>;
-  handleOnChangeChannel: (newChannel: Channel) => void;
-};
+type Props = {};
 
-const SidebarChannel = ({
-  serverId,
-  selectedChannel,
-  handleOnChangeChannel,
-  channelList,
-  setChannelList,
-}: Props) => {
+const SidebarChannel = ({}: Props) => {
+  const { selectedServer } = useContext<ServerContextContent>(ServerContext);
+  const {
+    channelList,
+    setChannelList,
+    selectedChannel,
+    handleOnChangeChannel,
+  } = useContext<ChannelContextContent>(ChannelContext);
+
   const onDragEnd = (result: any) => {
     if (result.destination) {
       const newItems = [...channelList];
@@ -58,11 +58,15 @@ const SidebarChannel = ({
           )}
         </Droppable>
       </DragDropContext>
-      <CreateChannelButton
-        serverId={serverId}
-        handleOnChangeChannel={handleOnChangeChannel}
-        setChannelList={setChannelList}
-      />
+      {channelList.length ? (
+        <CreateChannelButton
+          serverId={selectedServer?.id}
+          handleOnChangeChannel={handleOnChangeChannel}
+          setChannelList={setChannelList}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
