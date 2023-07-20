@@ -37,4 +37,12 @@ router.get("/login/failed", (req, res) => {
   });
 });
 
+router.post("/logout", (req, res, next) => {
+  req.logOut();
+  res.json({
+    success: true,
+    message: "successfully loged out.",
+  })
+});
+
 module.exports = router;
