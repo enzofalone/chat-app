@@ -32,6 +32,7 @@ Live preview: **soon**
 - Google OAuth 2.0
 - Toasts
 - Drag & Drop order of channels and workspaces
+- Joining to other workspaces via URL links
 
 ## How to Run
 
