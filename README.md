@@ -2,7 +2,11 @@
 
 This is a chat app heavily inspired in both **Discord** and the **Slack** application.
 
-It forces users to create their accounts
+It forces users to create their accounts using Google OAuth 2.0
+
+Live preview: **soon**
+
+<img src="https://cdn.jsdelivr.net/gh/enzofalone/chat-app@main/screenshots/copying-workspace-to-clipboard.png"/>
 
 ## Technologies Used
 
@@ -29,8 +33,6 @@ It forces users to create their accounts
 - Toasts
 - Drag & Drop order of channels and workspaces
 
-Live preview: **soon**
-
 ## How to Run
 
 1. run `git clone`
@@ -46,7 +48,11 @@ cd /api && pnpm i
 cd /ui && pnpm i
 ```
 
-3. create `.env` file using `.env.template` in `/api` and insert your own Google OAuth `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
+3. create `.env` file using `.env.template` in `/api` and insert your own Google OAuth access keys in `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
+
+```
+https://developers.google.com/identity/protocols/oauth2
+```
 
 4. run two terminals to start both `api` and `ui` local servers
 
