@@ -19,6 +19,8 @@ passport.use(
         username: profile.displayName,
         picture: profile.photos[0].value,
       };
+      
+      const user = await User.findByOrCreate(filter, data);
       console.log("signing up/logging in")
       done(null, profile);
     }
@@ -37,9 +39,8 @@ passport.deserializeUser(async (providerData, done) => {
   try {
     if (providerData.provider === "google") {
       let user = await User.findOne({ googleId: providerData.id });
-      console.log("fetched",user.googleId);
       if (!user) {
-        done(null, false, { error: err });
+        done(null, false, { error: "no user" });
       } else {
         done(null, user);
       }

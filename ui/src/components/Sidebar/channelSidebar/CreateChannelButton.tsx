@@ -1,9 +1,9 @@
-import { Button, Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import axios from "axios";
-import { ChangeEvent, Dispatch, useState } from "react";
-import { API_BASE_URL } from "../../../constants";
-import { Channel } from "../../../common/types";
+import { Button, Input, Modal, TextInput } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import axios from 'axios';
+import { ChangeEvent, Dispatch, useState } from 'react';
+import { API_BASE_URL } from '../../../constants';
+import { Channel } from '../../../common/types';
 
 type Props = {
   serverId: string | undefined;
@@ -17,9 +17,7 @@ function CreateChannelButton({
   setChannelList,
 }: Props) {
   const [openedModal, { open, close }] = useDisclosure(false);
-  const [inputs, setInputs] = useState({
-    channelName: "",
-  });
+  const [channelName, setChannelName] = useState('');
 
   const handleOnCreateChannel = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,15 +25,16 @@ function CreateChannelButton({
     //TODO: create toast regarding no serverId
 
     try {
+      // TODO: MOVE ALL THIS TO CONTEXT AA
       const config = {
         withCredentials: true,
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       };
 
       const data = {
-        channelName: inputs.channelName,
+        channelName: channelName,
         serverId,
       };
 
@@ -70,7 +69,7 @@ function CreateChannelButton({
       <Modal
         opened={openedModal}
         onClose={close}
-        title="Create new channel 😮😮"
+        title="Create new channel"
         centered
       >
         {/* Modal content */}
@@ -78,22 +77,18 @@ function CreateChannelButton({
           className="flex flex-col justify-start  "
           onSubmit={handleOnCreateChannel}
         >
-          {Object.entries(inputs).map(([category, value], idx) => {
-            return (
-              <div key={category} className="my-4 flex flex-col">
-                <h3>{category}</h3>
-                <input
-                  key={idx}
-                  name={category}
-                  value={value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    setInputs({ ...inputs, [e.target.name]: e.target.value });
-                  }}
-                />
-              </div>
-            );
-          })}
-          <Button type="submit" color="indigo">
+          <div className="my-4 flex flex-col">
+            <TextInput
+              label={'Channel Name'}
+              placeholder={'Awesome Channel'}
+              className="text-slate-100 p-3 text-md"
+              value={channelName}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                setChannelName(e.target.value);
+              }}
+            />
+          </div>
+          <Button type="submit" variant='filled' color="indigo" className='min-w-[100px] m-auto'>
             Create!
           </Button>
         </form>

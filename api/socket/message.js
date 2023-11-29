@@ -15,7 +15,7 @@ function addMessageEvents(socket) {
 
     if (newMessageResult.data) {
       socket
-        .to(message.room)
+        .to(message.channelId)
         .emit("receive-message", parseMessage(newMessageResult.data));
     }
 

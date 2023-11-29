@@ -24,8 +24,8 @@ const SidebarChannelButton: FC<Props> = ({
       {...provided.dragHandleProps}
     >
       <div
-        className={`px-2 py-1 my-1 cursor-pointer rounded-md font-bold hover:bg-slate-700 
-        ${isSelected ? "bg-slate-700" : "cursor-pointer"}`}
+        className={`px-2 py-1 my-1 cursor-pointer rounded-md hover:bg-slate-700 
+        ${isSelected ? "bg-slate-700 font-bold" : "cursor-pointer"}`}
         onClick={(event) => {
           handleOnChangeChannel(channelData);
         }}

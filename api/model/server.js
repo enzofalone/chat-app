@@ -12,11 +12,7 @@ const serverSchema = new mongoose.Schema(
       required: [true, "No owner user id found"],
     },
     users: {
-      type: [
-        {
-          userId: mongoose.Schema.Types.ObjectId,
-        },
-      ],
+      type: [mongoose.Schema.Types.ObjectId],
       required: [true, "No user found in users"],
       ref: "User",
     },

@@ -1,10 +1,11 @@
-import { Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { ChangeEvent, useContext } from "react";
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { Button } from "@mantine/core";
-import { ServerContext, ServerContextContent } from "../../../contexts/server";
+import { Modal, TextInput } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { ChangeEvent, useContext } from 'react';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { Button } from '@mantine/core';
+import { ServerContext, ServerContextContent } from '../../../contexts/server';
+import { toast } from 'react-hot-toast';
 
 type Props = {};
 
@@ -21,7 +22,6 @@ function CreateServerButton({}: Props) {
         className={`bg-blue-900 transition-all duration-[50ms] hover:border-[4px] border-gray-800 cursor-pointer rounded-[30%]  w-[50px] h-[50px] flex justify-center place-content-center my-auto`}
         onClick={open}
       >
-        {/* this is a placeholder, replace with quality image */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="icon icon-tabler icon-tabler-plus w-full h-full p-3"
@@ -55,21 +55,21 @@ type PropsModal = {
 };
 
 const CreateServerModal = ({ opened, close, createServer }: PropsModal) => {
-  const defaultInputs = {
-    serverName: "",
-  };
-
-  const [inputs, setInputs] = useState(defaultInputs);
+  const [serverNameInput, setServerNameInput] = useState('');
 
   const handleOnCreateServer = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { success } = await createServer(inputs.serverName);
+    const { success } = await createServer(serverNameInput);
 
     if (success) {
       // close modal
-      setInputs({ serverName: "" });
+      setServerNameInput('');
       close();
+
+      toast.success('New workspace successfully created!');
+    } else {
+      toast.error('Error while creating workspace!');
     }
   };
 
@@ -77,7 +77,7 @@ const CreateServerModal = ({ opened, close, createServer }: PropsModal) => {
     <Modal
       opened={opened}
       onClose={close}
-      title="Create new server 😮😮"
+      title="Create new workspace"
       centered
     >
       {/* Modal content */}
@@ -85,22 +85,16 @@ const CreateServerModal = ({ opened, close, createServer }: PropsModal) => {
         className="flex flex-col justify-start  "
         onSubmit={handleOnCreateServer}
       >
-        {Object.entries(inputs).map(([category, value], idx) => {
-          return (
-            <div key={category} className="my-4 flex flex-col">
-              <h3>{category}</h3>
-              <input
-                className="bg-slate-900 text-slate-100"
-                key={idx}
-                name={category}
-                value={value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  setInputs({ ...inputs, [e.target.name]: e.target.value });
-                }}
-              />
-            </div>
-          );
-        })}
+        <div className="my-4 flex flex-col">
+          <TextInput
+            label={'Server Name'}
+            className="text-slate-100 p-3 text-md"
+            value={serverNameInput}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              setServerNameInput(e.target.value);
+            }}
+          />
+        </div>
         <Button type="submit" color="indigo">
           Create!
         </Button>
