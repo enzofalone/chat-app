@@ -1,5 +1,5 @@
-import { API_BASE_URL } from "../constants";
-import { ApiClient, Method } from "./apiClient";
+import { API_BASE_URL } from '../constants';
+import { ApiClient, Method } from './apiClient';
 
 export class ApiServer extends ApiClient {
   constructor(remoteHostUrl: string = API_BASE_URL) {
@@ -7,15 +7,28 @@ export class ApiServer extends ApiClient {
   }
 
   async getAll() {
-    return await this.request({ endpoint: "/server", method: Method.GET });
+    return await this.request({ endpoint: '/server', method: Method.GET });
   }
 
   async create(serverName: string) {
-    console.log(serverName);
     return await this.request({
       endpoint: `/server/`,
       data: { serverName },
       method: Method.POST,
+    });
+  }
+
+  async createInviteLink(workspaceId: string) {
+    return await this.request({
+      endpoint: `/server/join/generate?workspaceId=${workspaceId}`,
+      method: Method.GET,
+    });
+  }
+
+  async join(workspaceId: string) {
+    return await this.request({
+      endpoint: `/server/join/${workspaceId}`,
+      method: Method.GET,
     });
   }
 }

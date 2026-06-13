@@ -1,4 +1,5 @@
 const MessageModel = require("../model/message");
+const { BadRequestError } = require("../utils/errors");
 const { parseMessage } = require("../utils/message");
 const { parseObjectId } = require("../utils/parse");
 class Message {
@@ -12,6 +13,8 @@ class Message {
   }
 
   static async createServerMessage(name, text, channelId) {
+    if(!name || !text || !channelId) throw new BadRequestError('Create server, missing fields');
+
     const message = new MessageModel({
       name,
       text,

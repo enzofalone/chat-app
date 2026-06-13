@@ -28,15 +28,16 @@ export const UserContextProvider: React.FC<Props> = ({ children }: Props) => {
 
   const fetchUser = async () => {
     setFetchingUser(true);
-
+    
     try {
       const response = await apiUser.getUser();
 
       if (response.data) {
         setUser(response.data.user);
       }
+      console.log(response);
     } catch (error) {}
-
+    
     setFetchingUser(false);
   };
 

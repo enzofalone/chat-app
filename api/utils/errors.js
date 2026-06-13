@@ -38,5 +38,5 @@ module.exports = {
     BadRequestError,
     UnauthorizedError,
     ForbiddenError,
-    NotFoundError
+    NotFoundError,
 }

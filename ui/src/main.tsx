@@ -1,19 +1,26 @@
-import ReactDOM from "react-dom/client";
-import { MantineProvider } from "@mantine/core";
-import App from "./App";
-import "./index.css";
-import { UserContextProvider } from "./contexts/user";
-import { ServerContextProvider } from "./contexts/server";
-import { ChannelContextProvider } from "./contexts/channel";
-import { MessageContextProvider } from "./contexts/message";
+import ReactDOM from 'react-dom/client';
+import { MantineProvider, createEmotionCache } from '@mantine/core';
+import App from './App';
+import './index.css';
+import { UserContextProvider } from './contexts/user';
+import { ServerContextProvider } from './contexts/server';
+import { ChannelContextProvider } from './contexts/channel';
+import { MessageContextProvider } from './contexts/message';
+import { Toaster } from 'react-hot-toast';
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+const myCache = createEmotionCache({
+  key: 'mantine',
+  prepend: false
+});
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   // <React.StrictMode>
   <>
     {/* // <React.StrictMode> */}
     {/* // </React.StrictMode> */}
     <MantineProvider
-      theme={{ colorScheme: "dark" }}
+      emotionCache={myCache}
+      theme={{ colorScheme: 'dark' }}
       withGlobalStyles
       withNormalizeCSS
       children={
@@ -21,6 +28,15 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <ServerContextProvider>
             <ChannelContextProvider>
               <MessageContextProvider>
+                <Toaster
+                  position="bottom-right"
+                  toastOptions={{
+                    style: {
+                      background: '#121a2e',
+                      color: 'white',
+                    },
+                  }}
+                />
                 <App />
               </MessageContextProvider>
             </ChannelContextProvider>

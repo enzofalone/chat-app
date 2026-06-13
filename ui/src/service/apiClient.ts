@@ -45,7 +45,8 @@ export class ApiClient {
         headers,
         url,
         method,
-        withCredentials: true
+        withCredentials: true,
+        data
       });
 
       return { data: res.data, error: null };

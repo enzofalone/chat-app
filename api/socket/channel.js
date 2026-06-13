@@ -1,20 +1,22 @@
-const { createMessage } = require("../utils/message");
-const Message = require("../controllers/message");
+const { createMessage } = require('../utils/message');
+const Message = require('../controllers/message');
 
 function addChannelEvents(socket) {
-  socket.on("join-channel", async (data, callback) => {
+  socket.on('join-channel', async (data, callback) => {
     const { prevChannel, newChannel, user } = data;
+    console.log(prevChannel, newChannel);
+    socket.join(newChannel.id);
 
-    socket.join(newChannel);
-    socket.leave(prevChannel);
-
+    if (prevChannel) {
+      socket.leave(prevChannel.id);
+    }
     // fetch message list
     const newMessages = await Message.findByChannel(newChannel.id);
 
     // create server message for user's client
     const serverMessage = createMessage(
       0,
-      "Server",
+      'Server',
       `Successfully joined ${newChannel.name}!`,
       newChannel.name,
       new Date(Date.now()).toISOString()
@@ -39,10 +41,10 @@ function addChannelEvents(socket) {
     );
 
     // message to all other users in previous channel
-    socket.to(data.prevChannel).emit("receive-message", messageUserLeft);
+    socket.to(data.prevChannel).emit('receive-message', messageUserLeft);
 
     // message to all other users in new channel
-    socket.to(data.channel).emit("receive-message", messageUserJoined);
+    socket.to(data.channel).emit('receive-message', messageUserJoined);
   });
 }
 
